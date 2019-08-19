@@ -1,0 +1,262 @@
+.wCard{
+    width:100%;
+    height:.96rem;
+    background-color:rgba(87,91,111,0.65);
+    box-sizing: border-box;
+    padding-left:.56rem;
+}
+.wCard .wName{
+    line-height: .96rem;
+    font-size:.4rem;
+    color:rgba(255,255,255,1);
+    float: left;
+}
+.towDetail{
+    width:.16rem;
+    float:right;
+    margin-top:.32rem;
+    margin-right:.3rem;
+}
+.wCard .wDt{
+    line-height: .96rem;
+    font-size:.373333rem;
+    color:rgba(255,255,255,1);
+    float: left;
+    margin-left: .453333rem;
+}
+.areaTopBanner{
+    width:100%;
+    min-height:16.5rem;
+    position: relative;
+    /* background:url(./img/areaBg.png) no-repeat;
+    background-color:#f9f9f9;
+    background-position: 0 0;
+    background-size: 100%; */
+    padding-bottom:.266667rem;
+}
+.topBanner{
+    width:100%;
+    min-height:9rem;
+}
+.areaLogo{
+    width:5.2rem;
+    padding-top:.56rem;
+    margin:0 auto;
+}
+.areaNme{
+    font-size:.64rem;
+    font-weight:400;
+    color:rgba(40,69,98,1);
+    text-shadow:0px 6px 12px rgba(255,255,255,0.60);
+    letter-spacing:0.15rem;
+}
+.areaIntr{
+    width:87%;
+    margin:.613333rem auto 0;
+    height:2.4rem;
+    font-size:.346667rem;
+    line-height:.48rem;
+    color:rgba(255,255,255,1);
+    text-shadow:0px 6px 12px rgba(0,0,0,0.50);
+    text-align: left;
+    font-weight: 100;
+
+}
+.areaMapBox{
+    padding:0 .32rem;
+    box-sizing: border-box;
+    min-height:6rem;
+    /* height:9.36rem; */
+    position: relative;
+}
+.areaMapBox .map{
+    width:100%;
+}
+.expCenter{
+    background:url(./img/expCenterBg.png) no-repeat;
+    width:4.1rem;
+    /* height:2.4rem; */
+    position: absolute;
+    right: .65rem;
+    bottom: .36rem;
+    box-sizing: border-box;
+    padding:.16rem;
+    border-radius: .2rem;
+}
+.expOne{
+    width:3.6rem;
+    height:.5rem;
+    background:url(./img/expOneBg.png) no-repeat;
+    background-size: 100%;
+    font-size:.266667rem;
+    line-height:0.5rem;
+    color:rgba(255,255,255,1);
+    text-align: left;
+    padding-left:0.2rem;
+    margin-bottom: 0.13rem;
+}
+.areaBannerBoX{
+    width:100%;
+    height:2.666667rem;
+}
+.areaBanner{
+    display: block;
+    width:100%;
+    height:100%;
+}
+.areaBannerBoX .mint-swipe-indicator{
+    background:#fff;
+    opacity:1;
+}
+.areaBannerBoX .mint-swipe-indicator.is-active{
+    background:#fff;
+    width:.406667rem;
+}
+.areaBannerBoX .mint-swipe-indicators{
+    bottom: .09rem;
+}
+.areaTitle{
+    position: relative;
+    height: 0.6rem;
+}
+.activeBox{
+    padding-top:.533333rem;
+}
+.areaTitleBg{
+    width:4rem;
+    padding-top:0.3rem;
+}
+.areaTitle .titsp{
+    font-size:.453333rem;
+    font-weight:500;
+    color:rgba(0,0,0,1);
+    position: absolute;
+    left:50%;
+    margin-left:-0.96rem;
+    background:#fff;
+    padding:0 0.15rem;
+}
+.areaMore{
+    width:.373333rem;
+    position: absolute;
+    right: 0rem;
+    top:0.1rem;
+}
+.activeImg{
+    width:2.24rem;
+    height:2.24rem;
+    float: left;
+}
+.activeDetail{
+    float: left;
+    width:calc(100% - 2.24rem);
+    box-sizing: border-box;
+    padding-left: .533333rem;
+}
+.activeDetail .tit{
+    font-size:.4rem;
+    font-weight:600;
+    color:rgba(42,42,42,1);
+    text-align: left;
+    margin-bottom: .24rem;
+}
+.activeDetail .time{
+    margin-bottom: .24rem;
+}
+.activeDetail .time,.activeDetail .address{
+    font-size:.32rem;
+    color:#585858;
+    text-align: left;
+}
+.activeOne{
+    margin:.506667rem 0 .64rem;
+}
+.wealth{
+    padding-top:.506667rem;
+    padding-bottom:.506667rem;
+}
+.wcontainer{
+    margin-top:.533333rem;
+}
+.wealthImg{
+    display: block;
+    width:3.466667rem;
+    height:2.133333rem;
+}
+.wcontainer {
+    width:100%;
+    height:2.866667rem;
+}
+/* .wcontainer .swiper-slide{
+    width: 3.466667rem!important;
+} */
+.wealthTop{
+    font-size:.32rem;
+    font-weight:500;
+    color:rgba(83,83,83,1);
+    text-align: center;
+    padding-left:0.3rem;
+    margin-top:.533333rem;
+}
+.wealthTop span{
+    display: inline-block;
+    margin-right: .346667rem;
+}
+.knowUs{
+    padding-top:.506667rem;
+    padding-bottom:.506667rem;
+}
+.knowUsOne{
+    width:33.3%;
+    float: left;
+    min-height:2rem;
+
+}
+.knowUsImg{
+    width:1.226667rem;
+    display: block;
+    margin:0 auto;
+}
+.knowUsOne .p1{
+    font-size:.373333rem;
+    font-weight:500;
+    color:rgba(59,59,59,1);
+    margin-top:.186667rem;
+}
+.knowUsOne .p2{
+    font-size:.32rem;
+    color:#777777;
+    margin-top:.026667rem;
+    
+}
+.knowUsMain{
+    margin-top:.533333rem;
+}
+.qrCodeBox{
+    padding-top:.533333rem;
+    padding-bottom:.506667rem;
+}
+.qrCodeOne{
+    width:50%;
+    float: left;
+    position: relative;
+}
+.qrCode{
+    width:2.453333rem;
+}
+.qrCodeText{
+    font-size:.32rem;
+    color:rgba(99,99,99,1);
+    margin-top:.213333rem;
+}
+.qrCodeOne1:after{ 
+    content:"  ";
+   width:1px; 
+   height:1.6rem; 
+   background-color: #EAEAEA; 
+   display:block;
+   position: absolute;
+   right:0;
+   top:0.5rem;
+   }
+   
