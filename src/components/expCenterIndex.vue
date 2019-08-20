@@ -22,7 +22,18 @@
         <div class="wealthTeacherBox">
                <div class="swiper-container wealthTeacherContainer">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide">
+                         <div class="swiper-slide" v-for="(item,index) in userList">
+                            <div class="Card" >
+                                <img :src="item.photo" class="card_left"/>
+                                <img src="./img/cardback.png" class="card_right"/>
+                                <p class="card_name">{{item.userName}}</p>
+                                <p class="card_num">{{item.userId}}</p>
+                                <p class="card_content">{{item.synopsis}}</p>
+                                <p class="card_des">{{item.operationContent}}</p>
+                                <p class="card_time">{{timeDistance(item.operationTime)}}</p>
+                            </div>
+                        </div>
+                        <!-- <div class="swiper-slide">
                             <div class="Card">
                                 <img src="./img/lin/wt.png" class="card_left"/>
                                 <img src="./img/cardback.png" class="card_right"/>
@@ -32,36 +43,8 @@
                                 <p class="card_des">她推荐了一只基金  </p>
                                 <p class="card_time">45分钟前</p>
                             </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="Card">
-                                <img src="./img/lin/wt.png" class="card_left"/>
-                                <img src="./img/cardback.png" class="card_right"/>
-                                <p class="card_name">张嘉善</p>
-                                <p class="card_num">DT1913071</p>
-                                <p class="card_content">22年国有银行、股份制银行财富管理工作经验，长期从事财富管理实务和个人财务规划，擅长股票投...务和个人财务规划，擅长股票投...</p>
-                                <p class="card_des">她推荐了一只基金  </p>
-                                <p class="card_time">45分钟前</p>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">Slide 3</div>
-                        <div class="swiper-slide">Slide 4</div>
-                        <div class="swiper-slide">Slide 5</div>
-                        <div class="swiper-slide">Slide 6</div>
-                        <div class="swiper-slide">Slide 7</div>
-                        <div class="swiper-slide">Slide 8</div>
-                        <div class="swiper-slide">Slide 9</div>
-                        <div class="swiper-slide">
-                             <div class="Card">
-                                <img src="./img/lin/wt.png" class="card_left"/>
-                                <img src="./img/cardback.png" class="card_right"/>
-                                <p class="card_name">张嘉善</p>
-                                <p class="card_num">DT1913071</p>
-                                <p class="card_content">22年国有银行、股份制银行财富管理工作经验，长期从事财富管理实务和个人财务规划，擅长股票投...务和个人财务规划，擅长股票投...</p>
-                                <p class="card_des">她推荐了一只基金  </p>
-                                <p class="card_time">45分钟前</p>
-                            </div>
-                        </div>
+                        </div> -->
+
                     </div>
               </div>
            </div> <!--wealthTeacherBox  -->
@@ -93,19 +76,19 @@
         <div class="pl26 pr26" style="margin-top:0.1rem;background:#F9F9F9;padding: .24rem .32rem;">
             <div class="areaBannerBoX">
                     <mt-swipe :auto="5000">
+                        <!-- <mt-swipe-item><img src="./img/lin/areaBanner.png" class="areaBanner"/></mt-swipe-item>
                         <mt-swipe-item><img src="./img/lin/areaBanner.png" class="areaBanner"/></mt-swipe-item>
-                        <mt-swipe-item><img src="./img/lin/areaBanner.png" class="areaBanner"/></mt-swipe-item>
-                        <mt-swipe-item><img src="./img/lin/areaBanner.png" class="areaBanner"/></mt-swipe-item>
-                        <!-- <mt-swipe-item v-for="item in bannerList">
+                        <mt-swipe-item><img src="./img/lin/areaBanner.png" class="areaBanner"/></mt-swipe-item> -->
+                        <mt-swipe-item v-for="item in bannerList" :key="item.bannerId">
                             <a :href='item.urlBring'><img :src="item.imageUrl" class="areaBanner"/></a>
-                        </mt-swipe-item> -->
+                        </mt-swipe-item>
                     </mt-swipe>
             </div>
         </div>
         <div class="contactUs pl26 pr26">
             <div class="areaTitle"><img src="./img/areaTitleBg.png" class="areaTitleBg"/><span class="titsp">联系我们</span></div>
-            <p class="contacTel">联系电话：0571-87569610  0571-87569685</p>
-            <p class="contacAdd">地址：浙江省杭州市江干区钱江路1366号华润大厦B座2508</p>
+            <p class="contacTel">联系电话：{{phone}}</p>
+            <p class="contacAdd">地址：{{city}}</p>
             <baidu-map :center="center" :zoom="zoom" @ready="handler" style="height:221px;margin:.26rem auto;" @click="getClickInfo" :scroll-wheel-zoom='true'>
             </baidu-map>
         </div><!--knowUs-->
@@ -180,16 +163,34 @@ export default {
     name:"expCenterIndex",
     data:function(){
         return{
-            center: {lng: 109.45744048529967, lat: 36.49771311230842},
+            center: {lng: '', lat: ''},
             zoom: 13,
             centerName:'',
             imageURL:'',
             centerSynopsis:'',
             bannerList:[],
-            userList:[]
+            userList:[],
+            phone:'',
+            city:''
         }
     },
     methods:{
+        timeDistance(value){
+			//当前时间磋
+            let nowt = Math.round(new Date() / 1000)
+            console.log(nowt)
+			let times = (nowt - value / 1000);
+			if(times>31536000){
+				return `${parseInt(times/31536000)}年前`
+			}else if(times>=86400&&times<31536000){
+				return `${parseInt(times/86400)}天前`;
+			}else if(times>=3600&&times<86400){
+				return `${parseInt(times/3600)}小时前`;
+			}else if(times>60&&times<3600){
+				return `${parseInt(times/60)}分钟前`;
+			}else if(times<60){return '刚刚'}
+
+		},
           initS:function(className,num){
             className='.'+className;
              new Swiper (className, {
@@ -201,6 +202,7 @@ export default {
         },
         initS2:function(className,num){
             className='.'+className;
+            setTimeout(function() {
              new Swiper (className, {
                 slidesPerView : num,
                 spaceBetween: -20,
@@ -211,33 +213,52 @@ export default {
                     clickable: true,
                 },
 
-            })     
+            })
+            },1000)     
         },
         handler ({BMap, map}) {
-      var point = new BMap.Point(116.49502521039,39.925516242363)
-      map.centerAndZoom(point, 13)
-      var marker = new BMap.Marker(point) // 创建标注
-      map.addOverlay(marker) // 将标注添加到地图中
-       var labelContent =
-'<div style=""><p>'
-+ "工作地点"
-+ '</p>'
-+'<p style="color:#6F6F6F;font-size:.32rem;white-space: normal;width:5rem;">'
-+ "北京市东四环华业国际中心B座17层心B座17层心B座17层心B座17层"
-+ '</p></div>';
-  
-var label = new BMap.Label(labelContent, {offset:new BMap.Size(-50,-80)});
-        label.setStyle({
-            color : "black",
-            fontSize : ".346667rem",
-            backgroundColor :"#FFF",
-            border :"0px solid #1E90FF",
-            padding:".3rem .3rem .3rem 0",
-            boxShadow: "0px .053rem .16rem rgba(0,0,0,0.16)",
-        });
-        marker.setLabel(label); 
-      var circle = new BMap.Circle(point, 6, { strokeColor: 'Red', strokeWeight: 6, strokeOpacity: 1, Color: 'Red', fillColor: '#f03' })
-      map.addOverlay(circle)
+        this.getCenterInfo()
+        console.log(this.phone)
+        var myValue = this.city;//查询的详细地址
+        setPlace();
+          function setPlace(){
+            map.clearOverlays();    //清除地图上所有覆盖物
+            function myFun(){
+              console.log(local.getResults().getPoi(0).point)
+              var poi = local.getResults().getPoi(0);    //获取第一个智能搜索的结果
+              var lng =poi.point.lng;
+              var lat =poi.point.lat;
+              var point = new BMap.Point(lng,lat)
+              map.centerAndZoom(point, 13)
+              var marker = new BMap.Marker(point) // 创建标注
+              map.addOverlay(marker) // 将标注添加到地图中
+              var labelContent =
+                '<div style=""><p>'
+                + "工作地点"
+                + '</p>'
+                +'<p style="color:#6F6F6F;font-size:.32rem;white-space: normal;width:5rem;">'
+                + myValue
+                + '</p></div>';
+            
+            var label = new BMap.Label(labelContent, {offset:new BMap.Size(-50,-80)});
+                    label.setStyle({
+                        color : "black",
+                        fontSize : ".346667rem",
+                        backgroundColor :"#FFF",
+                        border :"0px solid #1E90FF",
+                        padding:".3rem .3rem .3rem 0",
+                        boxShadow: "0px .053rem .16rem rgba(0,0,0,0.16)",
+                    });
+                    marker.setLabel(label); 
+                var circle = new BMap.Circle(point, 6, { strokeColor: 'Red', strokeWeight: 6, strokeOpacity: 1, Color: 'Red', fillColor: '#f03' })
+                map.addOverlay(circle)
+            }
+            var local = new BMap.LocalSearch(map, { //智能搜索
+              onSearchComplete: myFun
+            });
+            local.search(myValue);
+          }
+      
     },
     getClickInfo (e) {
     //   console.log(e.point.lng)
@@ -248,7 +269,7 @@ var label = new BMap.Label(labelContent, {offset:new BMap.Size(-50,-80)});
     getBanner:function(){//获取广告配置
         let that = this;
         Indicator.open();
-        var param=Base64.encode('{"userId":"'+that.userId+'","type":"3"}');//"type": "1首页2工作台3微站大区首页4微站业务部首页"
+        var param=Base64.encode('{"userId":"'+that.userId+'","type":"4"}');//"type": "1首页2工作台3微站大区首页4微站业务部首页"
         axios({
             method:'get',
             url:'/olmgweb/tcApiController/getTcBanner',//获取banner列表
@@ -274,8 +295,9 @@ var label = new BMap.Label(labelContent, {offset:new BMap.Size(-50,-80)});
     getCenterInfo:function(){
         let that = this;
         Indicator.open();
-        that.groupId='6e9bed37f8fb488da1f53fefd594c50a'
-        var param=Base64.encode('{"userId":"'+that.userId+'","groupId":"'+that.groupId+'"}');
+        that.groupId = that.$route.query.groupId;
+        //that.groupId='30e096cd5b2944ffa49e42d802d7450f'
+        var param=Base64.encode('{"groupId":"'+that.groupId+'"}');
         axios({
             method:'get',
             url:'/olmgweb/wzApiController/getAreaAndCenterInfo',//获取大区信息及其下属体验中心信息
@@ -296,13 +318,15 @@ var label = new BMap.Label(labelContent, {offset:new BMap.Size(-50,-80)});
                 that.centerName=data.centerList[0].centerName//体验中心名称,
                 that.imageURL=data.centerList[0].imageURL
                 that.centerSynopsis=data.centerList[0].centerSynopsis//体验中心概述,
+                that.phone = data.centerList[0].phone
+                that.city = data.centerList[0].city
             }
         })
     },
     getCenterUsers:function(){
         let that = this;
         Indicator.open();
-        that.groupId='6e9bed37f8fb488da1f53fefd594c50a'
+        that.groupId = that.$route.query.groupId;
         var param=Base64.encode('{"groupId":"'+that.groupId+'","condition":""}');
         axios({
             method:'get',
@@ -342,11 +366,11 @@ var label = new BMap.Label(labelContent, {offset:new BMap.Size(-50,-80)});
     },
     created:function(){
         this.userId = this.$route.query.userId;
-        this.groupId = this.$route.query.groupId;
-        this.userId='DT1603225'
+       // this.userId='DT1603225'
+        this.getCenterUsers()
         this.getCenterInfo()
         this.getBanner()
-        this.getCenterUsers()
+        
     }
 }
 </script>
