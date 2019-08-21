@@ -122,12 +122,59 @@ export default {
         },
         toShareCard(userId){
             console.log(userId)
-        }
+        },
+        Share:function() {
+            let ua = navigator.userAgent.toLowerCase();
+            //android终端
+            let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                return
+            }else{
+                var iconStr='[{"name":"分享","icon":"1","type":"html","module":"html_share","subMenu":""}]';	//tc
+			   // pass("menuMessage",iconStr);//tc
+                console.log(iconStr)
+                if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+                    //ios
+                    window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///menuMessage:'+iconStr});
+                } else if (/(Android)/i.test(navigator.userAgent)) {
+                    //android
+                    window.AndroidFunctionSetting.menuMessage(iconStr);
+                }
+            }
+        },
     },
     created:function(){
         this.groupId = this.$route.query.groupId;
         this.getCenterUsers()
-    }
+    },
+    mounted:function(){    
+       // 将moduleNameClick方法绑定到window下面，提供给外部调用
+       window['moduleNameClick'] = (data) => {
+        if(data == 'html_share'){
+           
+            let ua = navigator.userAgent.toLowerCase();
+            //android终端
+            let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                return
+            }else{
+                var urlstr = window.location.href;
+                var sendstr= '{"title":"","content":"","urlstr":"'+urlstr+'"}'; 				
+                alert(sendstr)
+                pass("shareMessage",sendstr);
+                if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+                    //ios
+                    window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///shareMessage:'+sendstr});
+                } else if (/(Android)/i.test(navigator.userAgent)) {
+                    //android
+                    window.AndroidFunctionSetting.shareMessage(sendstr);
+                }
+            }
+        }
+       }
+   },
 }
 </script>
 <style>
