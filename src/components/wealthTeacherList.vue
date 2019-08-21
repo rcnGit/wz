@@ -1,31 +1,38 @@
 <template>
     <div name='wealthTeacherList'>
+        <div class="wCard" v-show="showCard">
+            <span class="wName">张颖</span><span class="wDt">DT1928394</span><img src="./img/towDetail.png" class="towDetail"/>
+        </div><!--wCard--><!---->
         <div><img src="./img/belive.png" class="belive"/></div>
         <div class="pl26 pr26 wealthInputBox"><input placeholder="输入财富师姓名或工号查询" name="" class="wealthInput" ref='name'/><img src="./img/sou.png" class="sou" @click.stop='search'/></div>
-        <!-- <div class="wealthBox" v-for="item in userList">
-            <div class="wL">
-                <img :src='item.photo'/>
-            </div> 
-            <div class="wR">
-                <div class="wRtop">
-                    <span class="wName">{item.userName}</span><span class="wDt">{item.userId}</span>
+        <div class='noData' v-if='isShow'>
+            <img src='./img/cfs@2x.png'/>
+            <p class='noData_p1'>未查询到该财富师</p>
+            <p class='noData_p2' @click="Loadpage">查看其他财富师</p>
+        </div>
+        <div class="wealthBox" v-else>
+            <div class="wealthOne" v-for="item in userList" @click="toShareCard(item.userId)">
+                <div class="wL">
+                    <img :src='item.photo'/>
+                </div> 
+                <div class="wR">
+                    <div class="wRtop">
+                        <span class="wName">{{item.userName}}</span><span class="wDt">{{item.userId}}</span>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <div class="wRcenter line4">{{item.synopsis}}</div>
+                    <div class="wRbottom">
+                        <span class="waction">{{item.operationContent}}</span>
+                        <span class="wactiontime">{{timeDistance(item.operationTime)}}</span>
+                    </div>
                 </div>
-                <div style="clear:both;"></div>
-                <div class="wRcenter line4">
-                   {item.synopsis}
-                </div>
-                <div class="wRbottom">
-                    <span class="waction">{item.operationType}</span>
-                    <span class="wactiontime">{item.operationTime}</span>
-                </div>
+                <img src="./img/tui.png" class="tui" v-if="item.isRecommend == 1"/>
             </div>
-            <img src="./img/tui.png" class="tui" v-if="item.isRecommend == 1"/>
-        </div> -->
-        <div class="wealthBox">
-            <div class="wealthOne">
+        </div>
+             <!-- <div class="wealthOne">
                 <div class="wL">
                     <img src='./img/lin/wt.png'/>
-                 </div> <!---->
+                 </div> 
                 <div class="wR">
                     <div class="wRtop">
                         <span class="wName">张嘉善</span><span class="wDt">DT1913071</span>
@@ -39,26 +46,7 @@
                         <span class="wactiontime">45分钟前</span>
                     </div>
                 </div>
-                <img src="./img/tui.png" class="tui"/>
-            </div><!--wealthOne-->
-             <div class="wealthOne">
-                <div class="wL">
-                    <img src='./img/lin/wt.png'/>
-                 </div> <!---->
-                <div class="wR">
-                    <div class="wRtop">
-                        <span class="wName">张嘉善</span><span class="wDt">DT1913071</span>
-                    </div>
-                    <div style="clear:both;"></div>
-                    <div class="wRcenter line4">
-                        22年国有银行、股份制银行财富管理工作经验，长期从事财富管理实务和个人财务规划，擅长股票投，长期从事财富管理实务和个人财务规划，擅长股票
-                    </div>
-                    <div class="wRbottom">
-                        <span class="waction">她推荐了一只基金</span>
-                        <span class="wactiontime">45分钟前</span>
-                    </div>
-                </div>
-            </div><!--wealthOne-->
+            </div> -->
         </div>
     </div>
 </template>
@@ -72,14 +60,32 @@ export default {
             groupId:'',
             userId:'',
             userList:[],
+            isShow:false,
+            showCard:false,
+            condition:''
         }
     },
     methods:{
-        getAreaInfo:function(){//获取广告配置
+        timeDistance(value){
+			//当前时间
+            let nowt = Math.round(new Date() / 1000)
+			let times = (nowt - value / 1000);
+			if(times>31536000){
+				return `${parseInt(times/31536000)}年前`
+			}else if(times>=86400&&times<31536000){
+				return `${parseInt(times/86400)}天前`;
+			}else if(times>=3600&&times<86400){
+				return `${parseInt(times/3600)}小时前`;
+			}else if(times>60&&times<3600){
+				return `${parseInt(times/60)}分钟前`;
+			}else if(times<60){return '刚刚'}
+
+		},
+        getCenterUsers:function(){//获取广告配置
             let that = this;
             Indicator.open();
-            console.log('{"groupId":"'+that.groupId+'","condition":"'+that.userId+'"}')
-            var param=Base64.encode('{"groupId":"'+that.groupId+'","condition":"'+that.userId+'"}');//that.user.userId
+            console.log('{"groupId":"'+that.groupId+'","condition":"'+that.condition+'"}')
+            var param=Base64.encode('{"groupId":"'+that.groupId+'","condition":"'+that.condition+'"}');//that.user.userId
             axios({
                 method:'get',
                 url:'/olmgweb/wzApiController/getCenterUsers',//获取体验中心下属全部财富师信息
@@ -90,28 +96,42 @@ export default {
             })
             .then(function(res) {//成功之后
                 Indicator.close();
-                console.log(res.data)
-                var retCode=res.data.retCode;
-                var retMsg=res.data.retMsg;
+                var data=Base64.decode(res.data);
+                data=jQuery.parseJSON(data);
+                console.log(data)
+                var retCode=data.retCode;
+                var retMsg=data.retMsg;
                 if(retCode == 0){
-                    var data=Base64.decode(res.data);
-                    data=jQuery.parseJSON(data);
-                    that.userList=data.userList
+                    if(data.userList.length>0){
+                        that.isShow=false
+                        that.userList=data.userList;
+                    }else{
+                        that.isShow=true
+                    }
                 }
             })
         },
         search:function(){
-           this.userId=this.$refs.name.value;//ref的dom操作
-           console.log(this.userId)
-           //this.getAreaInfo()
+           this.condition=this.$refs.name.value;//ref的dom操作
+           console.log(this.condition)
+           this.getCenterUsers()
+        },
+        Loadpage:function(){
+            this.condition=''
+            this.getCenterUsers() 
+        },
+        toShareCard(userId){
+            console.log(userId)
         }
     },
     created:function(){
-
+        this.groupId = this.$route.query.groupId;
+        this.getCenterUsers()
     }
 }
 </script>
 <style>
+@import 'area.css';
 .belive{
     display: block;
     width:70%;
@@ -221,6 +241,24 @@ export default {
     position: absolute;
     right:0rem;
     top:0rem;
+}
+.noData{
+    padding-top: 3.6rem;
+}
+.noData img{
+    width: 2.5rem;
+    margin: 0 auto;
+}
+.noData p{
+    font-size: .426667rem;
+}
+.noData_p1{
+    padding-top: .7rem;
+    color: #363636;
+}
+.noData_p2{
+    padding-top: .3rem;
+    color: rgb(223, 30, 29);
 }
 </style>
 
