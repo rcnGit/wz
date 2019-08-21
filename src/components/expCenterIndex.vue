@@ -1,10 +1,17 @@
 <template>
     <div class="expCenterIndex">
-        <div class="wCard">
-            <span class="wName">张颖</span><span class="wDt">DT1928394</span><img src="./img/towDetail.png" class="towDetail"/>
+        <div class="wCard" v-show="wCardIf">
+            <span class="wName">张颖</span><span class="wDt">{{userId}}</span><img src="./img/towDetail.png" class="towDetail"/>
         </div><!--wCard--><!---->
+        <div class="cover_ma" v-show="cover_maIf" @click="closeCoverMa">
+           <div class="maBox">
+               <img src="./img/lin/ma.png"/>
+               <p>微信搜索“大唐财富服务号”</p>
+           </div>
+       </div>
+
         <div class="areaTopBanner tiyanTop">
-           <div class="backArea">返回大区</div>
+           <div class="backArea" @click="backArea">返回大区</div>
             <!-- <img :src="imageURL" class="areaBanner"/> -->
             <img src="./img/tiyanBg.png" class="topBanner"/>
             <div style="position:absolute;top:.96rem;width: 100%;">
@@ -49,27 +56,18 @@
               </div>
            </div> <!--wealthTeacherBox  -->
         </div><!--areaTopBanner-->
-        <div class="activeBox pl26 pr26">
-            <div class="areaTitle"><img src="./img/areaTitleBg.png" class="areaTitleBg"/><span class="titsp">尊享活动</span><img src="./img/more.png" class="areaMore"/></div>
-            <div class="activeOne">
-                <img src="./img/lin/active.png" class="activeImg"/>
+        <div class="activeBox pl26 pr26" v-show='activeShow'>
+            <div class="areaTitle"><img src="./img/areaTitleBg.png" class="areaTitleBg"/><span class="titsp">尊享活动</span><img src="./img/more.png" class="areaMore" v-if="activeMore" @click="openActiveList()"/></div>
+            <div class="activeOne" v-for="(item,index) in actList" v-if='index<=1' @click="openActiveDetail(item.oaActId)">
+                <img :src="item.bulletinPicture" class="activeImg"/>
                 <div class="activeDetail">
-                    <div class="tit">家族信托业务新业务分享</div>
-                    <div class="time">活动时间：<span>2018-12-06至2018-12-06</span></div>
-                    <div class="address">活动地点：<span>浙江省杭州市江干区钱江路1366号华润大厦B座2508</span></div>
+                    <div class="tit">{{item.actName}}</div>
+                    <div class="time">活动时间：<span>{{subtext(item.beginTime,10)}}至{{subtext(item.endTime,10)}}</span></div>
+                    <div class="address">活动地点：<span>{{item.location}}</span></div>
                 </div>
                  <div style="clear:both;"></div>
             </div><!--activeOne-->
            
-            <div class="activeOne" style="margin-top:0;">
-                <img src="./img/lin/active.png" class="activeImg"/>
-                <div class="activeDetail">
-                    <div class="tit">家族信托业务新业务分享</div>
-                    <div class="time">活动时间：<span>2018-12-06至2018-12-06</span></div>
-                    <div class="address">活动地点：<span>浙江省杭州市江干区钱江路1366号华润大厦B座2508</span></div>
-                </div>
-                 <div style="clear:both;"></div>
-            </div><!--activeOne-->
         </div><!--activeBox-->
         <!-- <div class="space"></div> -->
         
@@ -122,17 +120,17 @@
         <div class="knowUs pl26 pr26">
             <div class="areaTitle"><img src="./img/areaTitleBg.png" class="areaTitleBg"/><span class="titsp">了解大唐</span></div>
             <div class="knowUsMain">
-                <div class="knowUsOne">
+                <div class="knowUsOne" @click="open('pingtai')">
                     <img src="./img/knowUs1.png" class="knowUsImg"/>
-                    <p class="p1">公司简介</p>
+                    <p class="p1">平台简介</p>
                     <p class="p2">专业财富管理公司</p>
                 </div>
-                <div class="knowUsOne">
+                <div class="knowUsOne" @click="open('events')">
                     <img src="./img/knowUs2.png" class="knowUsImg"/>
                     <p class="p1">大事记</p>
                     <p class="p2">公司荣誉</p>
                 </div>
-                <div class="knowUsOne">
+                <div class="knowUsOne" @click="open('safety')">
                     <img src="./img/knowUs3.png" class="knowUsImg"/>
                     <p class="p1">安全保障</p>
                     <p class="p2">合规运作7年</p>
@@ -142,11 +140,11 @@
         </div><!--knowUs-->
         <div class="space"></div>
         <div class="qrCodeBox  pl26 pr26">
-            <div class="qrCodeOne qrCodeOne1">
+            <div class="qrCodeOne qrCodeOne1" @click="download()">
                 <img src="./img/lin/ma.png" class="qrCode"/>
                 <p class="qrCodeText">下载大唐财富APP</p>
             </div>
-            <div class="qrCodeOne" >
+            <div class="qrCodeOne" @click="showMa">
                 <img src="./img/lin/ma.png" class="qrCode"/>
                 <p class="qrCodeText">关注微信服务号</p>
             </div>
@@ -171,10 +169,27 @@ export default {
             bannerList:[],
             userList:[],
             phone:'',
-            city:''
+            city:'',
+            wCardIf:'',//是否显示财富师名片
+            userId: '',
+            actStatus:'1',//活动状态状态 0即将举办 1举办中 2已举办
+            actList:'',//活动列表
+            activeShow:true,//是否显示活动
+            activeMore:'true',//活动更多按钮
+            client:'',//终端
+            cover_maIf:false,//放大的服务号二维码是否显示
         }
     },
     methods:{
+        backArea:function(){
+             this.$router.push({
+                path:'/largeArea',
+                name:'largeArea',
+                query:{
+                    //comefrom:this.param.comefrom,//
+                }
+            })
+        },
         timeDistance(value){
 			//当前时间磋
             let nowt = Math.round(new Date() / 1000)
@@ -349,7 +364,124 @@ export default {
                 }
             }
         })
-    }
+    },
+     subtext:function(t){
+            if(!t==false){
+                return t.substr(0,10)
+            }else{
+                return '';
+            }
+
+        },
+        open:function(name){
+             this.$router.push({
+                path:'/'+name,
+                name:name,
+                query:{
+                    //comefrom:this.param.comefrom,//是否糖罐进入
+                }
+            })
+        },
+        closeCoverMa:function(){
+            this.cover_maIf=false;//隐藏放大的二维码；
+        },
+        showMa:function(){
+            this.cover_maIf=true;//显示放大的二维码；
+        },
+        download:function(){//下载大唐财富师App
+            var browser = {
+	            versions: function() {
+	                var u = navigator.userAgent,
+	                    app = navigator.appVersion;
+	                return { //移动终端浏览器版本信息   
+	                    ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端  
+	                    android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器  
+	                    iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器  
+	                };
+	            }(),      
+	            language: (navigator.browserLanguage || navigator.language).toLowerCase()
+	        }
+            var android = browser.versions.android;
+            var iOS = browser.versions.ios;
+
+            /*唤起APP的方法*/
+            if(iOS){ 
+                    window.location='tangyuanbaodatang://platformapi/startapp?param='
+                    var clickedAt = +new Date;  
+                    setTimeout(function(){
+                        !window.document.webkitHidden && setTimeout(function(){ 
+                            if (+new Date - clickedAt < 2000){  
+                                window.location = 'https://interface.tdyhfund.com/launcher/download.html?channel=app&name=dtcf';  
+                            }  
+                        }, 500);       
+                    }, 2500)
+            }else if(android){
+                window.location='tangyuanbaodatang://platformapi/startapp?param='+str
+                var clickedAt = +new Date;  
+                    setTimeout(function(){
+                        !window.document.webkitHidden && setTimeout(function(){ 
+                            if (+new Date - clickedAt < 2000){  
+                                window.location = 'https://interface.tdyhfund.com/launcher/download.html?channel=app&name=dtcf';  
+                            }  
+                        }, 500);       
+                    }, 2500)
+                }
+    
+    
+        },
+        openActiveDetail:function(id,n){
+            var actName=encodeURIComponent(n);
+            if(this.client == 'IOS' || this.client == 'Android'|| this.client == '0'){//大唐财富师APP
+                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
+            }else{
+                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
+            }
+        },
+        openActiveList:function(){
+             if(this.client == 'IOS' || this.client == 'Android'|| this.client == '0'){//大唐财富师APP
+                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/active?areaId='+this.areaId+'&comefrom=tangguan';
+            }else{
+                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/active?areaId='+this.areaId;
+            }
+        },
+          getActive:function(){//获取活动
+            let that = this;
+            Indicator.open();
+            var param={"pageNo":"1","actStatus":that.actStatus}//that.user.userId
+            axios({
+                method:'get',
+                url:'/wei/wxservice/wxexternal?opName=getactiveinfo',//获取活动列表
+                params:{
+                    param:param,
+                }
+            })
+            .then(function(res) {//成功之后
+                Indicator.close();
+                 console.log(res.data)
+                var itemList=res.data.itemList;
+               if(itemList.length==0){
+                   if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
+                       that.actStatus=0;
+                       that.getActive();
+                        return;
+                   }else if(that.actStatus==0){
+                       that.actStatus=2;
+                       that.getActive();
+                       return;
+                   }else{
+                       //隐藏该模块
+                       that.activeShow=false;
+                   }
+               }else if(itemList.length<=2){
+                that.activeMore=false;//不显示更多活动按钮
+                that.actList=itemList;
+               }else{
+                that.activeMore=true;//显示更多活动按钮
+                that.actList=itemList;
+               }
+                
+            })
+        },
     },
     components:{Swipe, SwipeItem,Swiper},
     mounted:function(){
@@ -366,10 +498,12 @@ export default {
     },
     created:function(){
         this.userId = this.$route.query.userId;
+         this.client=this.$route.query.client;
        // this.userId='DT1603225'
-        this.getCenterUsers()
-        this.getCenterInfo()
-        this.getBanner()
+        this.getCenterUsers();
+        this.getCenterInfo();
+        this.getBanner();
+        //this.getActive()//获取活动列表；
         
     }
 }
@@ -507,6 +641,34 @@ export default {
     }
     .contacTel{
         padding-top: .48rem;
+    }
+
+    .cover_ma{
+        width:100%;
+        height:100%;
+        position: fixed;
+        background-color: rgba(0,0,0,0.6);
+        z-index: 99;
+        top:0;
+        left:0;
+    }
+    .maBox{
+        width:4rem;
+        height:5rem;
+        position: absolute;
+        top:50%;
+        left:50%;
+        margin-top:-2.5rem;
+        margin-left:-2rem;
+    }
+    .maBox p{
+        font-size:.32rem;
+        margin-top:.2rem;
+        text-align: center;
+        color:#fff;
+    }
+    .maBox img{
+        width:100%;
     }
 </style>
 
