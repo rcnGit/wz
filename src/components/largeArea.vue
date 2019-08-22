@@ -254,17 +254,28 @@ export default {
         },
         openActiveDetail:function(id,n){
             var actName=encodeURIComponent(n);
-            if(this.client == 'IOS' || this.client == 'Android'|| this.client == '0'){//大唐财富师APP
-                window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
+            var ua = navigator.userAgent.toLowerCase();
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                 window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName;
+                return
             }else{
                 window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
+                return;
             }
+            
         },
         openActiveList:function(){
-             if(this.client == 'IOS' || this.client == 'Android'|| this.client == '0'){//大唐财富师APP
-                window.location.href=this.Host+'weixin-h5/index.html#/active?areaId='+this.areaId+'&comefrom=tangguan';
-            }else{
+            var ua = navigator.userAgent.toLowerCase();
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
                 window.location.href=this.Host+'weixin-h5/index.html#/active?areaId='+this.areaId;
+                return
+            }else{
+                window.location.href=this.Host+'weixin-h5/index.html#/active?areaId='+this.areaId+'&comefrom=tangguan';
+                return;
             }
         },
         getBanner:function(){//获取广告配置
