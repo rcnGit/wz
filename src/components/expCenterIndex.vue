@@ -5,7 +5,7 @@
         </div><!--wCard--><!---->
         <div class="cover_ma" v-show="cover_maIf" @click="closeCoverMa">
            <div class="maBox">
-               <img src="./img/lin/ma.png"/>
+               <img src="./img/lin/wx@2x.png"/>
                <p>微信搜索“大唐财富服务号”</p>
            </div>
        </div>
@@ -15,8 +15,8 @@
             <!-- <img :src="imageURL" class="areaBanner"/> -->
             <img src="./img/tiyanBg.png" class="topBanner"/>
             <div style="position:absolute;top:.96rem;width: 100%;">
-            <img src="./img/areaLogo.png" class="areaLogo"/>
-            <div class="areaNme" v-html="centerName"></div>
+            <img src="./img/logo.png" class="tiyLogo"/>
+            <div class="areaNme" v-html="centerName" style="padding-top: .2rem"></div>
             <div class="areaIntr line5" v-html="centerSynopsis"></div>
             <!-- <div class="areaMapBox">
                 <img src="./img/map.png" class="map"/>
@@ -58,7 +58,7 @@
         </div><!--areaTopBanner-->
         <div class="activeBox pl26 pr26" v-show='activeShow'>
             <div class="areaTitle"><img src="./img/areaTitleBg.png" class="areaTitleBg"/><span class="titsp">尊享活动</span><img src="./img/more.png" class="areaMore" v-if="activeMore" @click="openActiveList()"/></div>
-            <div class="activeOne" v-for="(item,index) in actList" v-if='index<=1' @click="openActiveDetail(item.oaActId)">
+            <div class="activeOne" v-for="(item,index) in actList" v-if='index<=1' @click="openActiveDetail(item.oaActId,item.actName)">
                 <img :src="item.bulletinPicture" class="activeImg"/>
                 <div class="activeDetail">
                     <div class="tit">{{item.actName}}</div>
@@ -141,11 +141,11 @@
         <div class="space"></div>
         <div class="qrCodeBox  pl26 pr26">
             <div class="qrCodeOne qrCodeOne1" @click="download()">
-                <img src="./img/lin/ma.png" class="qrCode"/>
+                <img src="./img/lin/app@2x.png" class="qrCode"/>
                 <p class="qrCodeText">下载大唐财富APP</p>
             </div>
             <div class="qrCodeOne" @click="showMa">
-                <img src="./img/lin/ma.png" class="qrCode"/>
+                <img src="./img/lin/wx@2x.png" class="qrCode"/>
                 <p class="qrCodeText">关注微信服务号</p>
             </div>
             <div style="clear:both;"></div>
@@ -432,16 +432,16 @@ export default {
         openActiveDetail:function(id,n){
             var actName=encodeURIComponent(n);
             if(this.client == 'IOS' || this.client == 'Android'|| this.client == '0'){//大唐财富师APP
-                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
+                window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
             }else{
-                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
+                window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
             }
         },
         openActiveList:function(){
              if(this.client == 'IOS' || this.client == 'Android'|| this.client == '0'){//大唐财富师APP
-                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/active?areaId='+this.areaId+'&comefrom=tangguan';
+                window.location.href=this.Host+'weixin-h5/index.html#/active?groupId='+this.groupId+'&comefrom=tangguan';
             }else{
-                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/active?areaId='+this.areaId;
+                window.location.href=this.Host+'weixin-h5/index.html#/active?groupId='+this.groupId;
             }
         },
           getActive:function(){//获取活动
@@ -450,7 +450,7 @@ export default {
             var param={"pageNo":"1","actStatus":that.actStatus}//that.user.userId
             axios({
                 method:'get',
-                url:'/wei/wxservice/wxexternal?opName=getactiveinfo',//获取活动列表
+                url:'https://weixin-test-interface.tdyhfund.com/wxservice/wxexternal?opName=getactiveinfo',//获取活动列表
                 params:{
                     param:param,
                 }
@@ -503,7 +503,7 @@ export default {
         this.getCenterUsers();
         this.getCenterInfo();
         this.getBanner();
-        //this.getActive()//获取活动列表；
+        this.getActive()//获取活动列表；
         
     }
 }

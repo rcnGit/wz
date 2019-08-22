@@ -122,6 +122,7 @@ export default {
         },
         toShareCard(userId){
             console.log(userId)
+            window.location.href=this.tgHost+'?userId='+userId
         },
         Share:function() {
             let ua = navigator.userAgent.toLowerCase();
