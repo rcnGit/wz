@@ -1,7 +1,7 @@
 <template>
     <div name='wealthTeacherList'>
         <div class="wCard" v-show="showCard">
-            <span class="wName">张颖</span><span class="wDt">DT1928394</span><img src="./img/towDetail.png" class="towDetail"/>
+            <span class="wName">{{userName}}</span><span class="wDt">{{userId}}</span><img src="./img/towDetail.png" class="towDetail"/>
         </div><!--wCard--><!---->
         <div><img src="./img/belive.png" class="belive"/></div>
         <div class="pl26 pr26 wealthInputBox"><input placeholder="输入财富师姓名或工号查询" name="" class="wealthInput" ref='name'/><img src="./img/sou.png" class="sou" @click.stop='search'/></div>
@@ -59,10 +59,12 @@ export default {
         return{
             groupId:'',
             userId:'',
+            userName:'',
             userList:[],
             isShow:false,
             showCard:false,
-            condition:''
+            condition:'',
+            client:''
         }
     },
     methods:{
@@ -124,7 +126,29 @@ export default {
             console.log(userId)
             window.location.href=this.tgHost+'?userId='+userId
         },
-        Share:function() {
+        ifShare:function(){
+            var ua = navigator.userAgent.toLowerCase();
+            //android终端
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                this.showCard=true;//显示分享的财富师card;
+                this.userName=decodeURIComponent(this.$route.query.userName);
+                return
+            }else{
+                if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+                    //ios
+                    this.client = 'IOS'
+                    Share('IOS')
+                } else if (/(Android)/i.test(navigator.userAgent)) {
+                    //android
+                    this.client == 'Android'
+                    Share('Android')
+                }
+            }
+        },
+        Share:function(cli) {
+            /*
             let ua = navigator.userAgent.toLowerCase();
             //android终端
             let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
@@ -142,18 +166,27 @@ export default {
                     //android
                     window.AndroidFunctionSetting.menuMessage(iconStr);
                 }
+            }*/
+            var iconStr='[{"name":"分享","icon":"1","type":"html","module":"html_share","subMenu":""}]';	//tc
+            // pass("menuMessage",iconStr);//tc
+            console.log(iconStr+'....'+cli)
+            if(cli == 'IOS'){
+                window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///menuMessage:'+iconStr});
+            }else{
+                window.AndroidFunctionSetting.menuMessage(iconStr);
             }
         },
     },
     created:function(){
         this.groupId = this.$route.query.groupId;
+        this.ifShare();//判断是不是分享到微信
         this.getCenterUsers()
     },
     mounted:function(){    
        // 将moduleNameClick方法绑定到window下面，提供给外部调用
        window['moduleNameClick'] = (data) => {
         if(data == 'html_share'){
-           
+           alert(this.client)
             let ua = navigator.userAgent.toLowerCase();
             //android终端
             let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端

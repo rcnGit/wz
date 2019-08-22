@@ -29,7 +29,7 @@
         <div class="wealthTeacherBox">
                <div class="swiper-container wealthTeacherContainer">
                     <div class="swiper-wrapper">
-                         <div class="swiper-slide" v-for="(item,index) in userList">
+                         <div class="swiper-slide" v-for="(item,index) in userList" @click="toWealthList">
                             <div class="Card" >
                                 <img :src="item.photo" class="card_left"/>
                                 <img src="./img/cardback.png" class="card_right"/>
@@ -496,6 +496,17 @@ export default {
                 
             })
         },
+        toWealthList(){
+            console.log(this.groupId)
+            this.$router.push({
+                path:'/wealthTeacherList',
+                name:'wealthTeacherList',
+                query:{
+                    groupId:this.groupId,//体验中心的Id
+                    userId:this.userId,//userId;
+                }
+            })
+        }
     },
     components:{Swipe, SwipeItem,Swiper},
     mounted:function(){
