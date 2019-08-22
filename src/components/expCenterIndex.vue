@@ -1,7 +1,7 @@
 <template>
     <div class="expCenterIndex">
         <div class="wCard" v-show="wCardIf">
-            <span class="wName">张颖</span><span class="wDt">{{userId}}</span><img src="./img/towDetail.png" class="towDetail"/>
+            <span class="wName">{{userName}}</span><span class="wDt">{{userId}}</span><img src="./img/towDetail.png" class="towDetail"/>
         </div><!--wCard--><!---->
         <div class="cover_ma" v-show="cover_maIf" @click="closeCoverMa">
            <div class="maBox">
@@ -11,7 +11,7 @@
        </div>
 
         <div class="areaTopBanner tiyanTop">
-           <div class="backArea" @click="backArea">返回大区</div>
+           <div class="backArea" @click="backArea" v-if='ifBackarea'>返回大区</div>
             <!-- <img :src="imageURL" class="areaBanner"/> -->
             <img src="./img/tiyanBg.png" class="topBanner"/>
             <div style="position:absolute;top:.96rem;width: 100%;">
@@ -170,6 +170,9 @@ export default {
             userList:[],
             phone:'',
             city:'',
+            areaId:'',//大区Id
+            userName:'',
+            ifBackarea:false,//是否显示返回大区的按钮
             wCardIf:'',//是否显示财富师名片
             userId: '',
             actStatus:'1',//活动状态状态 0即将举办 1举办中 2已举办
@@ -186,9 +189,20 @@ export default {
                 path:'/largeArea',
                 name:'largeArea',
                 query:{
-                    //comefrom:this.param.comefrom,//
+                    areaId:this.areaId,//
                 }
             })
+        },
+        ifShare:function(){
+            var ua = navigator.userAgent.toLowerCase();
+            //android终端
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                this.wCardIf=true;//显示分享的财富师card;
+                this.userName=decodeURIComponent(this.$route.query.userName);
+                return
+            }
         },
         timeDistance(value){
 			//当前时间磋
@@ -499,6 +513,13 @@ export default {
     created:function(){
         this.userId = this.$route.query.userId;
          this.client=this.$route.query.client;
+         this.areaId=this.$route.query.areaId;
+         if(!this.areaId==false){
+             this.ifBackarea=false;//隐藏返回按钮；
+         }else{
+             this.ifBackarea=true;//显示返回按钮；
+         }
+         this.ifShare();//是否显示分享的财富师card;
        // this.userId='DT1603225'
         this.getCenterUsers();
         this.getCenterInfo();

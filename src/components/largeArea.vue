@@ -1,7 +1,7 @@
 <template>
     <div class="largeArea">
         <div class="wCard" v-show="wCardIf">
-            <span class="wName">张颖</span><span class="wDt">{{userId}}</span><img src="./img/towDetail.png" class="towDetail"/>
+            <span class="wName">{{userName}}</span><span class="wDt">{{userId}}</span><img src="./img/towDetail.png" class="towDetail"/>
         </div><!--wCard--><!---->
        <div class="cover_ma" v-show="cover_maIf" @click="closeCoverMa">
            <div class="maBox">
@@ -16,21 +16,37 @@
             <img src="./img/areaLogo.png" class="areaLogo"/>
             <div class="areaNme" v-html="areaName"></div>
             <div class="areaIntr line5" v-html="areaSynopsis"></div>
-            <div class="areaMapBox">
+            <div class="areaMapBox" v-if='areaId=="d989ba87b64f439dab55797ff9e56e20"'>
                 <img src="./img/map.png" class="map"/>
                 <div class="location locationZ">
                     <!-- 浙江大区 -->
-                    <div class="locOne locOne1"  @click="tolocation($event,'1')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="true"/><img src="./img/location.png" class="locImg" v-show="false"/>杭州体验中心</div>
-                    <div class="locOne locOne2"  @click="tolocation($event,'2')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>金华体验中心</div>
-                    <div class="locOne locOne3"  @click="tolocation($event,'3')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>宁波体验中心</div>
-                    <div class="locOne locOne4"  @click="tolocation($event,'4')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>温州体验中心</div>
-                    <div class="locOne locOne5"  @click="tolocation($event,'5')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>义乌体验中心</div>
+                    <div class="locOne locOneZ1"  @click="tolocation($event,'Z1')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="true"/><img src="./img/location.png" class="locImg" v-show="false"/>杭州体验中心</div>
+                    <div class="locOne locOneZ2"  @click="tolocation($event,'Z2')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>金华体验中心</div>
+                    <div class="locOne locOneZ3"  @click="tolocation($event,'Z3')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>宁波体验中心</div>
+                    <div class="locOne locOneZ4"  @click="tolocation($event,'Z4')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>温州体验中心</div>
+                    <div class="locOne locOneZ5"  @click="tolocation($event,'Z5')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>义乌体验中心</div>
                 </div>
                  <div class="expCenter">
                     <!-- <div class="expOne">杭州一部体验中心</div><div class="expOne">杭州一部体验中心</div><div class="expOne">杭州一部体验中心</div> -->
                     <div class="expOne" v-for="item in centerList" @click="jumpExp(item.groupId)">{{item.centerName}}</div>
                 </div>
-            </div>
+             </div> <!-- -->
+             <div class="areaMapBox" v-if='areaId=="708407bb88be4da89e5e59bdd4cc3c85"'>
+                <img src="./img/mapX.png" class="map"/>
+                <div class="location locationZ">
+                    <!-- 浙江大区 -->
+                    <div class="locOne locOneX1"  @click="tolocation($event,'X1')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="true"/><img src="./img/location.png" class="locImg" v-show="false"/>成都体验中心</div>
+                    <div class="locOne locOneX2"  @click="tolocation($event,'X2')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>贵阳体验中心</div>
+                    <div class="locOne locOneX3"  @click="tolocation($event,'X3')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>昆明体验中心</div>
+                    <div class="locOne locOneX4"  @click="tolocation($event,'X4')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>南宁体验中心</div>
+                    <div class="locOne locOneX5"  @click="tolocation($event,'X5')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>玉溪体验中心</div>
+                    <div class="locOne locOneX6"  @click="tolocation($event,'X6')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>重庆体验中心</div>
+                </div>
+                 <div class="expCenter">
+                    <!-- <div class="expOne">杭州一部体验中心</div><div class="expOne">杭州一部体验中心</div><div class="expOne">杭州一部体验中心</div> -->
+                    <div class="expOne" v-for="item in centerList" @click="jumpExp(item.groupId)">{{item.centerName}}</div>
+                </div>
+             </div> <!-- -->
            
        </div>
         
@@ -51,7 +67,7 @@
             </div>
         <div class="activeBox pl26 pr26" v-show='activeShow'>
             <div class="areaTitle"><img src="./img/areaTitleBg.png" class="areaTitleBg"/><span class="titsp">尊享活动</span><img src="./img/more.png" class="areaMore" v-if="activeMore" @click="openActiveList()"/></div>
-            <div class="activeOne" v-for="(item,index) in actList" v-if='index<=1' @click="openActiveDetail(item.oaActId)">
+            <div class="activeOne" v-for="(item,index) in actList" v-if='index<=1' @click="openActiveDetail(item.oaActId,item.actName)">
                 <img :src="item.bulletinPicture" class="activeImg"/>
                 <div class="activeDetail" :oaActId="item.oaActId">
                     <div class="tit">{{item.actName}}</div>
@@ -134,9 +150,11 @@ export default {
         return{
             wCardIf:'',//是否显示财富师名片
             userId: '',
+            userName:'',
             type:'',
             bannerList: [],
             areaName:'',//大区名称,
+            areaId:'',//大区Id   708407bb88be4da89e5e59bdd4cc3c85 西南大区d989ba87b64f439dab55797ff9e56e20 浙江大区
             imageURL:'',
             actStatus:'1',//活动状态状态 0即将举办 1举办中 2已举办
             actList:'',//活动列表
@@ -237,16 +255,16 @@ export default {
         openActiveDetail:function(id,n){
             var actName=encodeURIComponent(n);
             if(this.client == 'IOS' || this.client == 'Android'|| this.client == '0'){//大唐财富师APP
-                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
+                window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
             }else{
-                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
+                window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
             }
         },
         openActiveList:function(){
              if(this.client == 'IOS' || this.client == 'Android'|| this.client == '0'){//大唐财富师APP
-                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/active?areaId='+this.areaId+'&comefrom=tangguan';
+                window.location.href=this.Host+'weixin-h5/index.html#/active?areaId='+this.areaId+'&comefrom=tangguan';
             }else{
-                window.location.href='https://weixin-test-interface.tdyhfund.com/weixin-h5/index.html#/active?areaId='+this.areaId;
+                window.location.href=this.Host+'weixin-h5/index.html#/active?areaId='+this.areaId;
             }
         },
         getBanner:function(){//获取广告配置
@@ -308,7 +326,7 @@ export default {
             var param={"pageNo":"1","actStatus":that.actStatus}//that.user.userId
             axios({
                 method:'get',
-                url:'/wei/wxservice/wxexternal?opName=getactiveinfo',//获取活动列表
+                url:'https://weixin-test-interface.tdyhfund.com/wxservice/wxexternal?opName=getactiveinfo',//获取活动列表
                 params:{
                     param:param,
                 }
@@ -346,9 +364,21 @@ export default {
                 path:'/expCenterIndex',
                 name:'expCenterIndex',
                 query:{
-                    groupId:id,//是否糖罐进入
+                    groupId:id,//体验中心的Id
+                    areaId:this.areaId,//大区Id;
                 }
             })
+        },
+        ifShare:function(){
+            var ua = navigator.userAgent.toLowerCase();
+            //android终端
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                this.wCardIf=true;//显示分享的财富师card;
+                this.userName=decodeURIComponent(this.$route.query.userName);
+                return
+            }
         },
         tolocation:function(e,z){
             $('.locOne').find('.locImg').show();
@@ -359,18 +389,32 @@ export default {
             $(obj).find('.locImgChoose').show();
             
             console.log($(this).find('.locImgChoose').length)
-            if(z==1){
+            if(z=='Z1'){//浙江大区
                 this.centerList=this.centerListZ1;
-            }else if(z==2){
+            }else if(z=='Z2'){
                 this.centerList=this.centerListZ2;
-            }else if(z==3){
+            }else if(z=='Z3'){
 
                 this.centerList=this.centerListZ3;
                 console.log(this.centerListZ3);
-            }else if(z==4){
+            }else if(z=='Z4'){
                 this.centerList=this.centerListZ4;
-            }else if(z==5){
+            }else if(z=='Z5'){
                 this.centerList=this.centerListZ5;
+            }else if(z=='X1'){//西南大区
+                this.centerList=this.centerLisX1;
+            }else if(z=='X2'){
+                this.centerList=this.centerListX2;
+            }else if(z=='X3'){
+
+                this.centerList=this.centerListX3;
+                console.log(this.centerListX3);
+            }else if(z=='X4'){
+                this.centerList=this.centerListX4;
+            }else if(z=='X5'){
+                this.centerList=this.centerListX5;
+            }else if(z=='X6'){
+                this.centerList=this.centerListX6;
             }
            
         }
@@ -381,13 +425,18 @@ export default {
     },
     created:function(){
         this.userId = this.$route.query.userId;
-        this.areaId = this.$route.query.areaId;
-        this.centerList=this.centerListZ1;//
-        this.userId='DT1603225';
+        this.areaId = this.$route.query.areaId;//大区Id
+        if(this.areaId=='d989ba87b64f439dab55797ff9e56e20'){
+            this.centerList=this.centerListZ1;
+        }else if(this.areaId=='708407bb88be4da89e5e59bdd4cc3c85'){
+            this.centerList=this.centerListX1;
+        }
+        
+        this.ifShare();//判断是不是分享到微信
         this.client=this.$route.query.client;
-        //this.getBanner();
-        //this.getAreaInfo();
-        //this.getActive()//获取活动列表；
+        this.getBanner();
+        this.getAreaInfo();
+        this.getActive()//获取活动列表；
     }
 }
 </script>
@@ -407,25 +456,49 @@ export default {
         font-size: .293333rem;
         color:#000;
     }
-    .locationZ .locOne1{
+    .locationZ .locOneZ1{
         top: 26%;
         left: 33%;
     }
-    .locationZ .locOne2{
+    .locationZ .locOneZ2{
         top: 37%;
         left: 32%;
     }
-    .locationZ .locOne3{
+    .locationZ .locOneZ3{
         top: 29%;
         left: 64%;
     }
-    .locationZ .locOne4{
+    .locationZ .locOneZ4{
         top: 60%;
         left: 41%;
     }
-    .locationZ .locOne5{
+    .locationZ .locOneZ5{
         top: 44%;
         left: 39%;
+    }
+    .locationZ .locOneX1{
+        top: 19%;
+        left: 39%;
+    }
+    .locationZ .locOneX2{
+        top: 45%;
+        left: 56%;
+    }
+    .locationZ .locOneX3{
+        top: 55%;
+        left: 35%;
+    }
+    .locationZ .locOneX4{
+        top: 65%;
+        left: 63%;
+    }
+    .locationZ .locOneX5{
+        top: 64%;
+        left: 33%;
+    }
+    .locationZ .locOneX6{
+        top: 29%;
+        left: 52%;
     }
     .locationZ .locImg{
         width:.506667rem;
