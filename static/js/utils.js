@@ -4,11 +4,11 @@ import axios from 'axios';
 export default {
     install(Vue, options) {
       //  Vue.prototype.Host='https://interface.tdyhfund.com/'
-        Vue.prototype.Host="http://weixin-test-interface.tdyhfund.com/"
+        Vue.prototype.Host="https://weixin-test-interface.tdyhfund.com/"
        // Vue.prototype.APPID='wx42b6456eeafbe956'  //生产
        Vue.prototype.APPID='wx1f686b130ea97432'
-        Vue.prototype.tgHost="http://172.16.8.82:8888/dthtml/HTML5/DTCFS_V4.2.2_190110/html/shared_card.html" 
-        //Vue.prototype.tgHost="https://test-interface.tdyhfund.com:8443/dthtml/HTML5/DTCFS/html/shared_card.html"
+       // Vue.prototype.tgHost="http://172.16.8.82:8888/dthtml/HTML5/DTCFS_V4.2.2_190110/html/shared_card.html" 
+        Vue.prototype.tgHost="https://test-interface.tdyhfund.com:8443/dthtml/HTML5/DTCFS/html/shared_card.html"
        // Vue.prototype.tgHost='https://interface.tdyhfund.com/dthtml/HTML5/DTCFS/html/shared_card.html'   //糖罐app财富师名片页
        
        
@@ -25,7 +25,7 @@ export default {
                     timestamp: res.data.timestamp, // 必填，生成签名的时间戳
                     nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
                     signature: res.data.signature, // 必填，签名
-                    jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+                    jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage','openLocation'] // 必填，需要使用的JS接口列表
                 })
                 wx.ready(function(res) { //通过ready接口处理成功验证 // config信息验证成功后会执行ready方法
                 //  console.log(meatTitle+'====meatTitle')

@@ -14,7 +14,7 @@ export default new Router({
     {
       path: '/largeArea',//大区首页
       name: 'largeArea',
-      component: largeArea
+      component: largeArea,
     },
     {
       path: '/expCenterIndex',//体验中心
@@ -29,17 +29,26 @@ export default new Router({
     {
       path: '/events',//大事记
       name: 'events',
-      component: events
+      component: events,
+      meta: {
+        title: '大事记'
+      }
     },
     {
       path: '/pingtai',//平台简介
       name: 'pingtai',
-      component: pingtai
+      component: pingtai,
+      meta: {
+        title: '平台简介'
+      }
     },
     {
       path: '/safety',//安全保障
       name: 'safety',
-      component: safety
+      component: safety,
+      meta: {
+        title: '安全保障'
+      }
     },
    /* {
       path: '/',

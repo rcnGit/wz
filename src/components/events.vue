@@ -15,12 +15,13 @@
   export default {
       name:'events',
       data:function(){
-          return{
-
+        return{
+            name:''
           }
       },
       created:function(){
-          
+        this.name=decodeURIComponent(this.$route.query.Name)
+        this.GasyncSDKConifg(this.name+'微站','私人银行服务的领航者') 
       }
   }
   </script>

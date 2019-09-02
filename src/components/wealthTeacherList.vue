@@ -1,8 +1,26 @@
 <template>
     <div name='wealthTeacherList'>
         <div class="wCard" v-show="showCard">
-            <span class="wName">{{userName}}</span><span class="wDt">{{userId}}</span><img src="./img/towDetail.png" class="towDetail"/>
+            <!-- <span class="wName">{{userName}}</span><span class="wDt">{{userId}}</span><img src="./img/towDetail.png" class="towDetail" @click="toCard"/> -->
+            <div class="cardPackUp">
+                <div class="packUpLeft">
+                    <img class="packAvatr" :src="photo" v-if="photo">
+                    <img src="./img/header_default.png" v-else  class="packAvatr">
+                    <span class="packName">{{userName}}</span>
+                </div>
+                <div class="packRight">
+                    <img class="cardWebIcon" src="./img/cardWebIcon.png" @click="toCard">
+                    <a class="phoneIcon" :href="'tel:' + mobile">
+                        <img src="./img/phoneIcon.png">
+                    </a>
+                </div>
+            </div>
         </div><!--wCard--><!---->
+        <div class='noData' v-if='isShowPage' style="padding-top:5.2rem;">
+            <img src='./img/weihu@2x.png'/>
+            <p class='noData_p1'>数据正在维护中......</p>
+        </div>
+        <div v-else>
         <div><img src="./img/belive.png" class="belive"/></div>
         <div class="pl26 pr26 wealthInputBox"><input placeholder="输入财富师姓名或工号查询" name="" class="wealthInput" ref='name'/><img src="./img/sou.png" class="sou" @click.stop='search'/></div>
         <div class='noData' v-if='isShow'>
@@ -13,7 +31,8 @@
         <div class="wealthBox" v-else>
             <div class="wealthOne" v-for="item in userList" @click="toShareCard(item.userId)">
                 <div class="wL">
-                    <img :src='item.photo'/>
+                    <img :src='item.photo' v-if="item.photo"/>
+                    <img src="./img/header_default.png" v-else>
                 </div> 
                 <div class="wR">
                     <div class="wRtop">
@@ -48,6 +67,7 @@
                 </div>
             </div> -->
         </div>
+        </div>
     </div>
 </template>
 <script>
@@ -64,7 +84,11 @@ export default {
             isShow:false,
             showCard:false,
             condition:'',
-            client:''
+            client:'',
+            centerName:'',
+            isShowPage:false,
+            photo:'', //头像
+            mobile:'', //手机号
         }
     },
     methods:{
@@ -110,6 +134,8 @@ export default {
                     }else{
                         that.isShow=true
                     }
+                }else{
+                    that.isShowPage=true
                 }
             })
         },
@@ -126,6 +152,9 @@ export default {
             console.log(userId)
             window.location.href=this.tgHost+'?userId='+userId
         },
+        toCard(){
+            window.location.href=this.tgHost+'?userId='+this.$route.query.userId
+        },
         ifShare:function(){
             var ua = navigator.userAgent.toLowerCase();
             //android终端
@@ -133,60 +162,73 @@ export default {
             var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
             if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
                 this.showCard=true;//显示分享的财富师card;
-                this.userName=decodeURIComponent(this.$route.query.userName);
+               // this.userName=decodeURIComponent(this.$route.query.userName);
                 return
             }else{
                 if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
                     //ios
                     this.client = 'IOS'
-                    Share('IOS')
+                    this.Share('IOS')
                 } else if (/(Android)/i.test(navigator.userAgent)) {
                     //android
                     this.client == 'Android'
-                    Share('Android')
+                    this.Share('Android')
                 }
             }
         },
         Share:function(cli) {
-            /*
-            let ua = navigator.userAgent.toLowerCase();
-            //android终端
-            let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
-            let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
-            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
-                return
-            }else{
-                var iconStr='[{"name":"分享","icon":"1","type":"html","module":"html_share","subMenu":""}]';	//tc
-			   // pass("menuMessage",iconStr);//tc
-                console.log(iconStr)
-                if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
-                    //ios
-                    window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///menuMessage:'+iconStr});
-                } else if (/(Android)/i.test(navigator.userAgent)) {
-                    //android
-                    window.AndroidFunctionSetting.menuMessage(iconStr);
-                }
-            }*/
             var iconStr='[{"name":"分享","icon":"1","type":"html","module":"html_share","subMenu":""}]';	//tc
-            // pass("menuMessage",iconStr);//tc
-            console.log(iconStr+'....'+cli)
             if(cli == 'IOS'){
                 window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///menuMessage:'+iconStr});
             }else{
-                window.AndroidFunctionSetting.menuMessage(iconStr);
+                window.AndroidFunction.menuMessage(iconStr);
             }
+        },
+        getCenterInfo:function(){
+            let that = this;
+            Indicator.open();
+            var param=Base64.encode('{"groupId":"'+that.groupId+'","userId":"'+that.userId+'"}');
+            axios({
+                method:'get',
+                url:'/olmgweb/wzApiController/getAreaAndCenterInfo',//获取大区信息及其下属体验中心信息
+                params:{
+                    param:param,
+                    osFlag:'3'
+                }
+            })
+            .then(function(res) {//成功之后
+                Indicator.close();
+                var data=Base64.decode(res.data);
+                data=jQuery.parseJSON(data);
+                console.log(data)
+                var retCode=data.retCode;
+                var retMsg=data.retMsg;
+                if(retCode == 0){
+                    if(data.centerList.length>0){
+                        console.log(data.centerList[0].centerName)
+                        that.centerName=data.centerList[0].centerName//体验中心名称,
+                        document.title ='大唐财富 · '+ that.centerName;
+                        that.GasyncSDKConifg(that.centerName+'微站','因为胜任  所以信任')
+                    }
+                    that.photo=data.photo;   //头像
+                    that.userName= data.name;   //名称
+                    that.mobile = data.mobile;  //手机号
+                }else{
+                    that.isShowPage=true
+                }
+            })
         },
     },
     created:function(){
         this.groupId = this.$route.query.groupId;
         this.ifShare();//判断是不是分享到微信
         this.getCenterUsers()
+        this.getCenterInfo()
     },
     mounted:function(){    
        // 将moduleNameClick方法绑定到window下面，提供给外部调用
        window['moduleNameClick'] = (data) => {
         if(data == 'html_share'){
-           alert(this.client)
             let ua = navigator.userAgent.toLowerCase();
             //android终端
             let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
@@ -195,15 +237,15 @@ export default {
                 return
             }else{
                 var urlstr = window.location.href;
-                var sendstr= '{"title":"","content":"","urlstr":"'+urlstr+'"}'; 				
+                var title = this.centerName+'微站'
+                var sendstr= '{"title":"'+title+'","content":"因为胜任  所以信任","urlstr":"'+urlstr+'"}'; 				
                 alert(sendstr)
-                pass("shareMessage",sendstr);
                 if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
                     //ios
                     window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///shareMessage:'+sendstr});
                 } else if (/(Android)/i.test(navigator.userAgent)) {
                     //android
-                    window.AndroidFunctionSetting.shareMessage(sendstr);
+                    window.AndroidFunction.shareMessage(sendstr);
                 }
             }
         }
@@ -215,7 +257,7 @@ export default {
 @import 'area.css';
 .belive{
     display: block;
-    width:70%;
+    width: 5.173333rem;
     margin: .426667rem auto;
 }
 .wealthInputBox{
@@ -229,8 +271,7 @@ export default {
     box-sizing: border-box;
     font-size: .32rem;
     font-family:PingFang SC;
-    
-   
+    padding-top: .113rem;
 }
 
 .sou{
@@ -292,8 +333,9 @@ export default {
     color:rgba(112,112,112,1);
     margin-left:.346667rem;
     float: left;
-    margin-top: .11rem;
+    margin-top: .12rem;
     display: inline-block;
+    font-weight: 500;
 }
 .wRcenter{
     margin-top: .346667rem;
@@ -302,7 +344,7 @@ export default {
     line-height:.455rem;
     color:rgba(105,105,105,1);
     height:1.786rem;
-    text-align: left;
+    text-align: justify;
 }
 .wRbottom{
     margin-top: .666667rem;
@@ -323,24 +365,7 @@ export default {
     right:0rem;
     top:0rem;
 }
-.noData{
-    padding-top: 3.6rem;
-}
-.noData img{
-    width: 2.5rem;
-    margin: 0 auto;
-}
-.noData p{
-    font-size: .426667rem;
-}
-.noData_p1{
-    padding-top: .7rem;
-    color: #363636;
-}
-.noData_p2{
-    padding-top: .3rem;
-    color: rgb(223, 30, 29);
-}
+
 </style>
 
 
