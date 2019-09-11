@@ -65,7 +65,7 @@
     color:rgba(255,255,255,1);
     text-shadow:0px 6px 12px rgba(0,0,0,0.50);
     text-align: justify;
-    font-weight: 100;
+    font-weight: 300;
 
 }
 .areaMapBox{
@@ -128,6 +128,7 @@
 }
 .activeBox{
     padding-top:.266667rem;
+    background: #fff;
 }
 .areaTitleBg{
     width:4rem;
@@ -182,6 +183,7 @@
 .wealth{
     padding-top:.53333rem;
     padding-bottom:.506667rem;
+    background: #fff;
 }
 .wcontainer{
     margin-top:.533333rem;
@@ -337,4 +339,31 @@
 }
 .cardWebIcon img, .phoneIcon img{
     width: 100%;
+}
+.tip {
+    width: 100%;
+    padding: .8rem 13.3% .466667rem 6.8%;
+    box-sizing: border-box;
+    position: relative;
+    background-color: #999999;
+    font-size: 0.4rem;
+    font-weight: 500;
+    color: rgba(255,255,255,1);
+    line-height: 1.5;
+}
+.guide {
+    width: .706667rem;
+    height: .88rem;
+    position: absolute;
+    top: 1.5%;
+    right: 5.6%;
+}
+.activeDetail .tit,.activeDetail .address{
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;/*此为两行，设置行数*/
+    /*! autoprefixer: off */
+    -webkit-box-orient: vertical;
+    /*! autoprefixer: on */
 }

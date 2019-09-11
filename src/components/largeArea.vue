@@ -1,5 +1,9 @@
 <template>
     <div class="largeArea">
+        <div id='w_CallApp' v-show="CallApp">
+            <div class="tip">点击右上角按钮，然后在弹出的菜单中，点击在浏览中打开，即可安装。</div>
+            <img class="guide" alt="" src="./img/guide.png">
+        </div>
         <div class='noData' v-if='isShowPage' style="padding-top:5.2rem;">
             <img src='./img/weihu@2x.png'/>
             <p class='noData_p1'>数据正在维护中......</p>
@@ -59,6 +63,7 @@
              <div class="areaMapBox" v-if='areaId=="708407bb88be4da89e5e59bdd4cc3c85"'>
                 <img src="./img/mapX.png" class="map"/>
                 <div class="location locationZ">
+                    <p class="loc_tit">私人银行服务在身边</p>
                     <!-- 浙江大区 -->
                     <div class="locOne locOneX1"  @click="tolocation($event,'X1','成都')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="true"/><img src="./img/location.png" class="locImg" v-show="false"/>成都体验中心</div>
                     <div class="locOne locOneX2"  @click="tolocation($event,'X2','贵阳')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>贵阳体验中心</div>
@@ -96,7 +101,7 @@
             <div class="activeOne" v-for="(item,index) in actList" v-if='index<=1' @click="openActiveDetail(item.oaActId,item.actName)">
                 <img :src="item.bulletinPicture" class="activeImg"/>
                 <div class="activeDetail" :oaActId="item.oaActId">
-                    <div class="tit">{{item.actName}}</div>
+                    <div class="tit"  v-html="item.actName"></div>
                     <div class="time">活动时间：<span>{{subtext(item.beginTime,10)}}至{{subtext(item.endTime,10)}}</span></div>
                     <div class="address">活动地点：<span>{{item.location}}</span></div>
                 </div>
@@ -136,17 +141,17 @@
                 <div class="knowUsOne" @click="open('pingtai')">
                     <img src="./img/knowUs1.png" class="knowUsImg"/>
                     <p class="p1">平台简介</p>
-                    <p class="p2">专业财富管理公司</p>
+                    <p class="p2">私行服务平台</p>
                 </div>
                 <div class="knowUsOne" @click="open('events')">
                     <img src="./img/knowUs2.png" class="knowUsImg"/>
                     <p class="p1">大事记</p>
-                    <p class="p2">公司荣誉</p>
+                    <p class="p2">平台荣誉</p>
                 </div>
                 <div class="knowUsOne" @click="open('safety')">
                     <img src="./img/knowUs3.png" class="knowUsImg"/>
                     <p class="p1">安全保障</p>
-                    <p class="p2">合规运作7年</p>
+                    <p class="p2">合规运作8年</p>
                 </div>
                 <div style="clear:both;"></div>
             </div>
@@ -175,6 +180,7 @@ export default {
     name:"largeArea",
     data:function(){
         return{
+            CallApp:false,
             isShowPage:false,
             showBanner:true,
             showbannerList:false,
@@ -194,11 +200,15 @@ export default {
             actList:'',//活动列表
             activeShow:true,//是否显示活动
             activeMore:true,//活动更多按钮
+            length:'',
+            length2:'',
+            length3:'',
             client:'',//终端
             areaSynopsis:'',//大区概述,
             cover_maIf:false,//放大的服务号二维码是否显示
             baseImg:'./img/areaBg.png',
             centerList:'',
+            shareflag:'',
             centerListZ1:[{'centerName':'直属体验中心','groupId':'175390b5ebe94ba899451f4b12041b29'},{'centerName':'杭州一部体验中心','groupId':'5533b21cc352414fbec7d012f74f243a'},{'centerName':'杭州二部体验中心','groupId':'20f6e8a1d2d6444fb3a2c9079f16b3bc'}],
             centerListZ2:[{'centerName':'金华体验中心','groupId':'f44a5f67030943038e41ae04ffe0f81d'}],
             centerListZ3:[{'centerName':'宁波三部体验中心','groupId':'d10a21a0cd80457aa07f424fe0ac1b00'},{'centerName':'宁波四部体验中心','groupId':'0bcb5dc352cd4401b892f0a7c540a198'}],
@@ -214,7 +224,20 @@ export default {
     },
     methods:{
         toCard(){
-            window.location.href=this.tgHost+'?userId='+this.userId
+            if(!this.$route.query.shareUserId == false){
+                var userid = this.$route.query.shareUserId
+            }else{
+                var userid = this.userId
+            }
+            var ua = navigator.userAgent.toLowerCase();
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                window.location.href=this.tgHost+'?userId='+userid+'&channel=5&shareflag=1'
+                return
+            }else{
+                window.location.href=this.tgHost+'?userId='+userid+'&channel=5'
+            }
         },
           initS:function(className,num){
             className='.'+className;
@@ -249,48 +272,57 @@ export default {
         showMa:function(){
             this.popupVisible=true
             //this.cover_maIf=true;//显示放大的二维码；
-            _czc.push(['_trackEvent', this.areaName ,'H5AreaWXClick']);//大区服务号二维码点击量
+            _czc.push(['_trackEvent', this.areaName+'服务号二维码' ,'H5AreaWXClick']);//大区服务号二维码点击量
         },
         download:function(){//下载大唐财富师App
-            var browser = {
-	            versions: function() {
-	                var u = navigator.userAgent,
-	                    app = navigator.appVersion;
-	                return { //移动终端浏览器版本信息   
-	                    ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端  
-	                    android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器  
-	                    iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器  
-	                };
-	            }(),      
-	            language: (navigator.browserLanguage || navigator.language).toLowerCase()
-	        }
-            var android = browser.versions.android;
-            var iOS = browser.versions.ios;
-
-            /*唤起APP的方法*/
-            if(iOS){ 
+            if(!this.shareflag == false){
+            var ua = navigator.userAgent.toLowerCase();
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                this.CallApp=true
+                window.scrollTo(0,0);
+                return
+            }else{
+                var browser = {
+                    versions: function() {
+                        var u = navigator.userAgent,
+                            app = navigator.appVersion;
+                        return { //移动终端浏览器版本信息   
+                            ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端  
+                            android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器  
+                            iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器  
+                        };
+                    }(),      
+                    language: (navigator.browserLanguage || navigator.language).toLowerCase()
+                }
+                var android = browser.versions.android;
+                var iOS = browser.versions.ios;
+                /*唤起APP的方法*/
+                if(iOS){ 
+                        window.location='tangyuanbaodatang://platformapi/startapp?param='
+                        var clickedAt = +new Date;  
+                        setTimeout(function(){
+                            !window.document.webkitHidden && setTimeout(function(){ 
+                                if (+new Date - clickedAt < 2000){  
+                                    window.location = 'https://interface.tdyhfund.com/launcher/download.html?channel=app&name=dtcf';  
+                                }  
+                            }, 500);       
+                        }, 500)
+                }else if(android){
                     window.location='tangyuanbaodatang://platformapi/startapp?param='
                     var clickedAt = +new Date;  
-                    setTimeout(function(){
-                        !window.document.webkitHidden && setTimeout(function(){ 
-                            if (+new Date - clickedAt < 2000){  
-                                window.location = 'https://interface.tdyhfund.com/launcher/download.html?channel=app&name=dtcf';  
-                            }  
-                        }, 500);       
-                    }, 2500)
-            }else if(android){
-                window.location='tangyuanbaodatang://platformapi/startapp?param='+str
-                var clickedAt = +new Date;  
-                    setTimeout(function(){
-                        !window.document.webkitHidden && setTimeout(function(){ 
-                            if (+new Date - clickedAt < 2000){  
-                                window.location = 'https://interface.tdyhfund.com/launcher/download.html?channel=app&name=dtcf';  
-                            }  
-                        }, 500);       
-                    }, 2500)
-                }
-            _czc.push(['_trackEvent', this.areaName ,'H5AreaAPPClick']);//大区APP二维码点击量
-    
+                        setTimeout(function(){
+                            !window.document.webkitHidden && setTimeout(function(){ 
+                                if (+new Date - clickedAt < 5000){  
+                                    window.location = 'https://interface.tdyhfund.com/launcher/download.html?channel=app&name=dtcf';  
+                                }  
+                            }, 800);       
+                        }, 800)
+                    }
+            }
+            _czc.push(['_trackEvent', this.areaName+'APP二维码' ,'H5AreaAPPClick']);//大区APP二维码点击量
+            }
         },
         openActiveDetail:function(id,n){
             var actName=encodeURIComponent(n);
@@ -304,13 +336,18 @@ export default {
                 //window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
                 //return;
                 var sendstr= '{"title":"活动详情","activeId":"'+id+'"}'; 				
-                alert(sendstr)
-                if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
-                    //ios
-                    window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///jumpActive:'+sendstr});
-                } else if (/(Android)/i.test(navigator.userAgent)) {
-                    //android
-                    window.AndroidFunction.jumpActive(sendstr);
+               // alert(sendstr)
+                if(!this.shareflag == false){
+                    window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName;
+                    return
+                }else{
+                    if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+                        //ios
+                        window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///jumpActive:'+sendstr});
+                    } else if (/(Android)/i.test(navigator.userAgent)) {
+                        //android
+                        window.AndroidFunction.jumpActive(sendstr);
+                    }
                 }
             }
             
@@ -320,13 +357,19 @@ export default {
             var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
             var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
             if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
-                window.location.href=this.Host+'weixin-h5/index.html#/active?areaId='+this.areaId;
+                window.location.href=this.Host+'weixin-h5/index.html#/active?areaId='+this.areaId+'&userId='+this.userId;
                 return
             }else{
-                window.location.href=this.Host+'weixin-h5/index.html#/active?areaId='+this.areaId+'&comefrom=tangchao&Name='+encodeURIComponent(this.areaName);
-                return;
+                if(!this.shareflag == false){
+                    window.location.href=this.Host+'weixin-h5/index.html#/active?areaId='+this.areaId+'&userId='+this.userId;
+                    return
+                }else{
+                    window.location.href=this.Host+'weixin-h5/index.html#/active?areaId='+this.areaId+'&comefrom=tangchao&Name='+encodeURIComponent(this.areaName)+'&userId='+this.userId;
+                    return;
+                }
+                
             }
-            _czc.push(['_trackEvent', this.areaName ,'H5AreaEventsClick']);//大区活动更多点击量
+            _czc.push(['_trackEvent', this.areaName+'活动' ,'H5AreaEventsClick']);//大区活动更多点击量
         },
         getBanner:function(){//获取广告配置
             let that = this;
@@ -389,15 +432,43 @@ export default {
                     // that.centerList=data.centerList
                     document.title ='大唐财富 · '+ that.areaName;
                     that.GasyncSDKConifg(that.areaName+'微站','私人银行服务的领航者')
-                    that.photo=data.photo;   //头像
-                    that.userName= data.name;   //名称
-                    that.mobile = data.mobile;  //手机号
                 }else{
                     that.isShowPage=true
                 }
             })
         },
-        getActive:function(){//获取活动
+        getuserName:function(){
+            if(!this.$route.query.shareUserId == false){
+                var userid = this.$route.query.shareUserId
+            }else{
+                var userid = this.userId
+            }
+            let that = this;
+            Indicator.open();
+            var param=Base64.encode('{"areaId":"'+that.areaId+'","userId":"'+userid+'"}');//that.user.userId
+            axios({
+                method:'get',
+                url:'/olmgweb/wzApiController/getAreaAndCenterInfo',//获取大区信息及其下属体验中心信息
+                params:{
+                    param:param,
+                    osFlag:'3'
+                }
+            })
+            .then(function(res) {//成功之后
+                Indicator.close();
+                var data=Base64.decode(res.data);
+                data=jQuery.parseJSON(data);
+                console.log(data)
+                var retCode=data.retCode;
+                var retMsg=data.retMsg;
+                if(retCode == 0){
+                    that.photo=data.photo;   //头像
+                    that.userName= data.name;   //名称
+                    that.mobile = data.mobile;  //手机号
+                }
+            })
+        },
+        getActive:function(id){//获取活动
             let that = this;
             Indicator.open();
             var param={"pageNo":"1","actStatus":that.actStatus,"officeId":that.$route.query.areaId}
@@ -426,11 +497,36 @@ export default {
                        that.activeShow=false;
                    }
                }else if(itemList.length<=2){
-                that.activeMore=false;//不显示更多活动按钮
-                that.actList=itemList;
+               // that.activeMore=false;//不显示更多活动按钮
+                if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
+                    that.length=itemList.length
+                    that.actStatus=0;
+                    that.getActive('1');
+                    that.actList=itemList;
+                    return;
+                }else if(that.actStatus==0){
+                    that.length2=itemList.length
+                    if(that.length2+that.length<=2){
+                        that.actStatus=2;
+                        if(that.length2==0){
+                            that.getActive('1');
+                        }
+                        that.actList=itemList;
+                        return;
+                    }
+                }else{
+                    that.length3=itemList.length
+                    if(that.length2+that.length+that.length3<=2){
+                        that.activeMore=false;//不显示更多活动按钮
+                       // return;
+                    }
+                    that.actList=itemList;
+                }
                }else{
                 that.activeMore=true;//显示更多活动按钮
-                that.actList=itemList;
+                if(id != '1'){
+                    that.actList=itemList;
+                }
                }
                 
             })
@@ -444,7 +540,11 @@ export default {
                     groupId:id,//体验中心的Id
                     areaId:this.areaId,//大区Id;
                     userId:this.userId,
-                    userName:this.$route.query.userName
+                    userName:this.$route.query.userName,
+                    shareflag:this.shareflag,
+                    shareUserId:this.$route.query.shareUserId,
+                    showCard:this.$route.query.showCard,
+                    shareId:this.$route.query.shareId,
                 }
             })
         },
@@ -454,18 +554,30 @@ export default {
             var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
             var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
             if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
-                this.wCardIf=true;//显示分享的财富师card;
+                if(this.$route.query.showCard != 0){
+                    if(!this.userId == false){
+                        this.wCardIf=true;//显示分享的财富师card;
+                    }
+                }
                 //this.userName=decodeURIComponent(this.$route.query.userName);
                 return
             }else{
                 if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
                     //ios
                     this.client = 'IOS'
-                    this.Share('IOS')
+                    if(!this.shareflag == false){ 
+                        this.wCardIf=true;//显示分享的财富师card;
+                    }else{
+                        this.Share('IOS')
+                    }
                 } else if (/(Android)/i.test(navigator.userAgent)) {
                     //android
                     this.client == 'Android'
-                    this.Share('Android')
+                    if(!this.shareflag == false){ 
+                        this.wCardIf=true;//显示分享的财富师card;
+                    }else{
+                        this.Share('Android')
+                    }
                 }
             }
         },
@@ -479,7 +591,7 @@ export default {
             }
         },
         tolocation:function(e,z,c){
-            _czc.push(['_trackEvent', c,'H5AreaMapsClick']);//大区地图点击量
+            _czc.push(['_trackEvent', this.areaName+'地图','H5AreaMapsClick',c]);//大区地图点击量
             $('.locOne').find('.locImg').show();
              $('.locOne').find('.locImgChoose').hide();
              // e.currentTarget 是你绑定事件的元素
@@ -517,7 +629,7 @@ export default {
            
         },
         czname(name){
-            _czc.push(['_trackEvent', this.areaName,'H5AreaBannerClick',name]);//大区banner点击量
+            _czc.push(['_trackEvent', this.areaName+'banner','H5AreaBannerClick',name]);//大区banner点击量
         }
     },
     components:{Swipe, SwipeItem,Swiper},
@@ -531,7 +643,11 @@ export default {
             if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
                 return
             }else{
-                var urlstr = window.location.href;
+                if(!this.$route.query.shareId ==false){
+                    var urlstr = location.href.split('?')[0]+'?userId='+this.$route.query.shareId+'&areaId='+this.$route.query.areaId+'&userName='+this.$route.query.userName+'&shareflag=1';
+                }else{
+                    var urlstr = window.location.href+'&shareflag=1';
+                }
                 var title = this.areaName+'微站'
                 var sendstr= '{"title":"'+title+'","content":"私人银行服务的领航者","urlstr":"'+urlstr+'"}'; 				
                // alert(sendstr)
@@ -549,6 +665,7 @@ export default {
         
     },
     created:function(){
+        this.shareflag=this.$route.query.shareflag;
         this.userId = this.$route.query.userId;
         this.areaId = this.$route.query.areaId;//大区Id
         if(this.areaId=='d989ba87b64f439dab55797ff9e56e20'){
@@ -556,11 +673,11 @@ export default {
         }else if(this.areaId=='708407bb88be4da89e5e59bdd4cc3c85'){
             this.centerList=this.centerListX1;
         }
-        
         this.ifShare();//判断是不是分享到微信
         //this.client=this.$route.query.client;
         this.getBanner();
         this.getAreaInfo();
+        this.getuserName();
         this.getActive()//获取活动列表；
     }
 }

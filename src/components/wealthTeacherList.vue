@@ -39,7 +39,7 @@
                         <span class="wName">{{item.userName}}</span><span class="wDt">{{item.userId}}</span>
                     </div>
                     <div style="clear:both;"></div>
-                    <div class="wRcenter line4">{{item.synopsis}}</div>
+                    <div class="wRcenter line4" v-html="item.synopsis"></div>
                     <div class="wRbottom">
                         <span class="waction">{{item.operationContent}}</span>
                         <span class="wactiontime">{{timeDistance(item.operationTime)}}</span>
@@ -93,19 +93,20 @@ export default {
     },
     methods:{
         timeDistance(value){
-			//当前时间
-            let nowt = Math.round(new Date() / 1000)
-			let times = (nowt - value / 1000);
-			if(times>31536000){
-				return `${parseInt(times/31536000)}年前`
-			}else if(times>=86400&&times<31536000){
-				return `${parseInt(times/86400)}天前`;
-			}else if(times>=3600&&times<86400){
-				return `${parseInt(times/3600)}小时前`;
-			}else if(times>60&&times<3600){
-				return `${parseInt(times/60)}分钟前`;
-			}else if(times<60){return '刚刚'}
-
+            //当前时间
+            if(!value == false){
+                let nowt = Math.round(new Date() / 1000)
+                let times = (nowt - value / 1000);
+                if(times>31536000){
+                    return `${parseInt(times/31536000)}年前`
+                }else if(times>=86400&&times<31536000){
+                    return `${parseInt(times/86400)}天前`;
+                }else if(times>=3600&&times<86400){
+                    return `${parseInt(times/3600)}小时前`;
+                }else if(times>60&&times<3600){
+                    return `${parseInt(times/60)}分钟前`;
+                }else if(times<60){return '刚刚'}
+            }
 		},
         getCenterUsers:function(){//获取广告配置
             let that = this;
@@ -145,34 +146,94 @@ export default {
            this.getCenterUsers()
         },
         Loadpage:function(){
+            this.$refs.name.value=''
             this.condition=''
             this.getCenterUsers() 
         },
         toShareCard(userId){
             console.log(userId)
-            window.location.href=this.tgHost+'?userId='+userId
+            var ua = navigator.userAgent.toLowerCase();
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                if(!this.$route.query.shareUserId == false){
+                    var userid = this.$route.query.shareUserId
+                    if(this.$route.query.showCard != 0){
+                        window.location.href=this.tgHost+'?userId='+userId+'&channel=5&shareflag=1&shareUserId='+userid
+                    }else{
+                        window.location.href=this.tgHost+'?userId='+userId+'&channel=5&shareflag=1&showCard=0&shareUserId='+userid 
+                    }
+                }else{
+                    if(!this.$route.query.userId == false){
+                        if(this.$route.query.showCard != 0){
+                            window.location.href=this.tgHost+'?userId='+userId+'&channel=5&shareflag=1&shareUserId='+this.$route.query.userId   //shareUserId名片用户id
+                        }else{
+                            window.location.href=this.tgHost+'?userId='+userId+'&channel=5&shareflag=1&showCard=0&shareUserId='+this.$route.query.userId   //shareUserId名片用户id
+                        }
+                    }else{
+                        window.location.href=this.tgHost+'?userId='+userId+'&channel=5&shareflag=1&showCard=0'//showCard=0不展示名片
+                    }
+                }
+                
+                return
+            }else{
+                if(this.$route.query.userId == userId){
+                    window.location.href=this.tgHost+'?userId='+userId+'&channel=5'
+                }else{
+                    if(!this.$route.query.shareId == false){
+                        window.location.href=this.tgHost+'?userId='+userId+'&channel=5&shareId='+this.$route.query.shareId
+                    }else{
+                        window.location.href=this.tgHost+'?userId='+userId+'&channel=5&shareId='+this.$route.query.userId
+                    }
+                }
+            }
         },
         toCard(){
-            window.location.href=this.tgHost+'?userId='+this.$route.query.userId
+            if(!this.$route.query.shareUserId == false){
+                var userid = this.$route.query.shareUserId
+            }else{
+                var userid = this.$route.query.userId
+            }
+            var ua = navigator.userAgent.toLowerCase();
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                window.location.href=this.tgHost+'?userId='+userid+'&channel=5&shareflag=1'
+                return
+            }else{
+                window.location.href=this.tgHost+'?userId='+userid+'&channel=5'
+            }
         },
         ifShare:function(){
             var ua = navigator.userAgent.toLowerCase();
             //android终端
             var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
             var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
-            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
-                this.showCard=true;//显示分享的财富师card;
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信
+                if(this.$route.query.showCard != 0){
+                    if(!this.$route.query.userId==false){
+                        this.showCard=true;//显示分享的财富师card;
+                    } 
+                }
                // this.userName=decodeURIComponent(this.$route.query.userName);
                 return
             }else{
                 if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
                     //ios
                     this.client = 'IOS'
-                    this.Share('IOS')
+                    if(!this.shareflag == false){ 
+                        this.wCardIf=true;//显示分享的财富师card;
+                    }else{
+                        this.Share('IOS')
+                    }
                 } else if (/(Android)/i.test(navigator.userAgent)) {
                     //android
                     this.client == 'Android'
-                    this.Share('Android')
+                    if(!this.shareflag == false){ 
+                        this.wCardIf=true;//显示分享的财富师card;
+                    }else{
+                        this.Share('Android')
+                    }
                 }
             }
         },
@@ -185,9 +246,14 @@ export default {
             }
         },
         getCenterInfo:function(){
+            if(!this.$route.query.shareUserId == false){
+                var userid = this.$route.query.shareUserId
+            }else{
+                var userid = this.$route.query.userId
+            }
             let that = this;
             Indicator.open();
-            var param=Base64.encode('{"groupId":"'+that.groupId+'","userId":"'+that.userId+'"}');
+            var param=Base64.encode('{"groupId":"'+that.groupId+'","userId":"'+userid+'"}');
             axios({
                 method:'get',
                 url:'/olmgweb/wzApiController/getAreaAndCenterInfo',//获取大区信息及其下属体验中心信息
@@ -221,6 +287,7 @@ export default {
     },
     created:function(){
         this.groupId = this.$route.query.groupId;
+        this.shareflag=this.$route.query.shareflag;
         this.ifShare();//判断是不是分享到微信
         this.getCenterUsers()
         this.getCenterInfo()
@@ -236,10 +303,14 @@ export default {
             if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
                 return
             }else{
-                var urlstr = window.location.href;
+                if(!this.$route.query.shareId ==false){
+                    var urlstr = location.href.split('?')[0]+'?userId='+this.$route.query.shareId+'&groupId='+this.$route.query.groupId+'&userName='+this.$route.query.userName;
+                }else{
+                    var urlstr = window.location.href;
+                }
                 var title = this.centerName+'微站'
                 var sendstr= '{"title":"'+title+'","content":"因为胜任  所以信任","urlstr":"'+urlstr+'"}'; 				
-                alert(sendstr)
+                //alert(sendstr)
                 if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
                     //ios
                     window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///shareMessage:'+sendstr});
@@ -303,11 +374,11 @@ export default {
     margin-bottom: .32rem;
     padding: .266667rem .293333rem;
     box-sizing: border-box;
-    height: 4.8rem;
+    height: 4.04rem;
     position: relative;
 }
 .wRtop{
-    padding-top: .32rem;
+    padding-top: .16rem;
 }
 .wR,.wL{
     float: left;
@@ -319,7 +390,7 @@ export default {
 }
 .wL img{
     width: 3.466667rem;
-    height: 4.266667rem;
+    height: 3.466667rem;
 }
 .wRtop .wName{
     font-size:.426667rem;
@@ -338,7 +409,7 @@ export default {
     font-weight: 500;
 }
 .wRcenter{
-    margin-top: .346667rem;
+    margin-top: .24rem;
     font-size:.293333rem;
     font-weight:400;
     line-height:.455rem;
@@ -347,7 +418,7 @@ export default {
     text-align: justify;
 }
 .wRbottom{
-    margin-top: .666667rem;
+    margin-top: .266667rem;
 }
 .waction{
     font-size:.293333rem;

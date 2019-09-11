@@ -1,5 +1,9 @@
 <template>
     <div class="expCenterIndex">
+        <div id='w_CallApp' v-show="CallApp">
+            <div class="tip">点击右上角按钮，然后在弹出的菜单中，点击在浏览中打开，即可安装。</div>
+            <img class="guide" alt="" src="./img/guide.png">
+        </div>
         <div class='noData' v-if='isShowPage' style="padding-top:5.2rem;">
             <img src='./img/weihu@2x.png'/>
             <p class='noData_p1'>数据正在维护中......</p>
@@ -33,7 +37,7 @@
                 <p>微信搜索“大唐财富服务号”</p>
             </div>
         </mt-popup>
-        <div class="areaTopBanner tiyanTop">
+        <div class="areaTopBanner tiyanTop" style="min-height: 12rem;">
            <div class="backArea" @click="backArea" v-if='ifBackarea'>返回大区</div>
             <img :src="imageURL" class="topexpBanner" v-if="showBanner"/>
             <img src="./img/tiyanBg.png" class="topexpBanner" v-else/>
@@ -51,17 +55,29 @@
         </div>
         <div class="wealthTeacherBox">
                <div class="swiper-container wealthTeacherContainer">
-                    <div class="swiper-wrapper">
-                         <div class="swiper-slide" v-for="(item,index) in userList" @click="toWealthList" style="box-shadow:0px 0px .16rem rgba(165,165,165,0.16);border-radius: .24rem">
+                    <div class="swiper-wrapper" @click="toWealthList">
+                         <div class="swiper-slide" v-for="(item,index) in userList" v-if="userList.length>1" style="box-shadow:0px 0px .16rem rgba(165,165,165,0.16);border-radius: .24rem">
                             <div class="Card" >
                                 <img :src='item.photo' v-if="item.photo"  class="card_left"/>
                                 <img src="./img/header_default.png" v-else  class="card_left">
-                                <img src="./img/cardback.png" class="card_right"/>
+                                <img src="./img/cardback.png" class="card_right" />
                                 <p class="card_name">{{item.userName}}</p>
                                 <p class="card_num">{{item.userId}}</p>
-                                <p class="card_content">{{item.synopsis}}</p>
+                                <p class="card_content" v-html="item.synopsis"></p>
                                 <p class="card_des">{{item.operationContent}}</p>
                                 <p class="card_time">{{timeDistance(item.operationTime)}}</p>
+                            </div>
+                        </div>
+                        <div class="" v-for="(item,index) in userList" v-if="userList.length==1" style="box-shadow:0px 0px .16rem rgba(165,165,165,0.16);border-radius: .24rem;border-radius: 0.24rem;width: 315px;margin-right: -20px;">
+                            <div class="Card" >
+                                <img :src='item.photo' v-if="item.photo"  class="card_left" style="left: 20px"/>
+                                <img src="./img/header_default.png" v-else  class="card_left" style="left: 20px">
+                                <img src="./img/cardback.png" class="card_right" style="right: 20px"/>
+                                <p class="card_name" style="left: 50%">{{item.userName}}</p>
+                                <p class="card_num" style="right: 8.4%">{{item.userId}}</p>
+                                <p class="card_content" v-html="item.synopsis" style="left:48%"></p>
+                                <p class="card_des" style="left: 44%">{{item.operationContent}}</p>
+                                <p class="card_time" style="right: 8.4%">{{timeDistance(item.operationTime)}}</p>
                             </div>
                         </div>
                         <!-- <div class="swiper-slide">
@@ -85,7 +101,7 @@
             <div class="activeOne" v-for="(item,index) in actList" v-if='index<=1' @click="openActiveDetail(item.oaActId,item.actName)">
                 <img :src="item.bulletinPicture" class="activeImg"/>
                 <div class="activeDetail">
-                    <div class="tit">{{item.actName}}</div>
+                    <div class="tit" v-html="item.actName"></div>
                     <div class="time">活动时间：<span>{{subtext(item.beginTime,10)}}至{{subtext(item.endTime,10)}}</span></div>
                     <div class="address">活动地点：<span>{{item.location}}</span></div>
                 </div>
@@ -111,8 +127,8 @@
         <div class="contactUs pl26 pr26">
             <div class="areaTitle"><img src="./img/areaTitleBg.png" class="areaTitleBg"/><span class="titsp">联系我们</span></div>
             <p class="contacTel">联系电话：{{phone}}</p>
-            <p class="contacAdd">地址：{{city}}</p>
-            <baidu-map :center="center" :zoom="zoom" @ready="getCenterInfo" style="height:221px;margin:.5333rem auto;" @click="getClickInfo" :scroll-wheel-zoom='true'>
+            <p class="contacAdd">联系地址：{{city}}</p>
+            <baidu-map :center="center" :zoom="zoom" @ready="getCenterInfo" style="height:221px;margin:.5333rem auto;" @touchstart="getClickInfo" :scroll-wheel-zoom='true'>
             </baidu-map>
         </div><!--knowUs-->
         <div class="space"></div>
@@ -148,17 +164,17 @@
                 <div class="knowUsOne" @click="open('pingtai')">
                     <img src="./img/knowUs1.png" class="knowUsImg"/>
                     <p class="p1">平台简介</p>
-                    <p class="p2">专业财富管理公司</p>
+                    <p class="p2">私行服务平台</p>
                 </div>
                 <div class="knowUsOne" @click="open('events')">
                     <img src="./img/knowUs2.png" class="knowUsImg"/>
                     <p class="p1">大事记</p>
-                    <p class="p2">公司荣誉</p>
+                    <p class="p2">平台荣誉</p>
                 </div>
                 <div class="knowUsOne" @click="open('safety')">
                     <img src="./img/knowUs3.png" class="knowUsImg"/>
                     <p class="p1">安全保障</p>
-                    <p class="p2">合规运作7年</p>
+                    <p class="p2">合规运作8年</p>
                 </div>
                 <div style="clear:both;"></div>
             </div>
@@ -189,6 +205,7 @@ export default {
     name:"expCenterIndex",
     data:function(){
         return{
+            CallApp:false,
             isShowPage:false,
             showBanner:true,
             showbannerList:false,
@@ -216,11 +233,28 @@ export default {
             activeMore:true,//活动更多按钮
             client:'',//终端
             cover_maIf:false,//放大的服务号二维码是否显示
+            length:'',
+            length2:'',
+            length3:'',
+            shareflag:''
         }
     },
     methods:{
         toCard(){
-            window.location.href=this.tgHost+'?userId='+this.userId
+            if(!this.$route.query.shareUserId == false){
+                var userid = this.$route.query.shareUserId
+            }else{
+                var userid = this.userId
+            }
+            var ua = navigator.userAgent.toLowerCase();
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                window.location.href=this.tgHost+'?userId='+userid+'&channel=5&shareflag=1'
+                return
+            }else{
+                window.location.href=this.tgHost+'?userId='+userid+'&channel=5'
+            }
         },
         backArea:function(){
              this.$router.push({
@@ -228,7 +262,11 @@ export default {
                 name:'largeArea',
                 query:{
                     areaId:this.areaId,//
-                    userId:this.userId,//userId;
+                    userId:this.$route.query.userId,//userId;
+                    shareflag:this.$route.query.shareflag,
+                    shareUserId:this.$route.query.shareUserId,
+                    showCard:this.$route.query.showCard,
+                    shareId:this.$route.query.shareId,
                 }
             })
         },
@@ -238,18 +276,30 @@ export default {
             var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
             var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
             if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
-                this.wCardIf=true;//显示分享的财富师card;
+                if(this.$route.query.showCard != 0){
+                    if(!this.userId == false){
+                        this.wCardIf=true;//显示分享的财富师card;
+                    }
+                }
                 //this.userName=decodeURIComponent(this.$route.query.userName);
                 return
             }else{
                 if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
                     //ios
                     this.client = 'IOS'
-                    this.Share('IOS')
+                    if(!this.shareflag == false){ 
+                        this.wCardIf=true;//显示分享的财富师card;
+                    }else{
+                        this.Share('IOS')
+                    }
                 } else if (/(Android)/i.test(navigator.userAgent)) {
                     //android
                     this.client == 'Android'
-                    this.Share('Android')
+                    if(!this.shareflag == false){ 
+                        this.wCardIf=true;//显示分享的财富师card;
+                    }else{
+                        this.Share('Android')
+                    }
                 }
             }
         },
@@ -282,20 +332,20 @@ export default {
             }
         },
         timeDistance(value){
-			//当前时间磋
-            let nowt = Math.round(new Date() / 1000)
-            console.log(nowt)
-			let times = (nowt - value / 1000);
-			if(times>31536000){
-				return `${parseInt(times/31536000)}年前`
-			}else if(times>=86400&&times<31536000){
-				return `${parseInt(times/86400)}天前`;
-			}else if(times>=3600&&times<86400){
-				return `${parseInt(times/3600)}小时前`;
-			}else if(times>60&&times<3600){
-				return `${parseInt(times/60)}分钟前`;
-			}else if(times<60){return '刚刚'}
-
+            //当前时间磋
+            if(!value == false){
+                let nowt = Math.round(new Date() / 1000)
+                let times = (nowt - value / 1000);
+                if(times>31536000){
+                    return `${parseInt(times/31536000)}年前`
+                }else if(times>=86400&&times<31536000){
+                    return `${parseInt(times/86400)}天前`;
+                }else if(times>=3600&&times<86400){
+                    return `${parseInt(times/3600)}小时前`;
+                }else if(times>60&&times<3600){
+                    return `${parseInt(times/60)}分钟前`;
+                }else if(times<60){return '刚刚'}
+            }
 		},
           initS:function(className,num){
             className='.'+className;
@@ -340,7 +390,7 @@ export default {
               map.addOverlay(marker) // 将标注添加到地图中
               var labelContent =
                 '<div style=""><p style="font-weight:600;">'
-                + "工作地点"
+                + "联系地址"
                 + '</p>'
                 +'<p style="color:#6F6F6F;font-size:.32rem;white-space: normal;width:5rem;">'
                 + myValue
@@ -367,7 +417,6 @@ export default {
       
     },
     getClickInfo (e) {
-       console.log(e)
     //   console.log(e.point.lat)
         var city=this.city
         var ua = navigator.userAgent.toLowerCase();
@@ -384,22 +433,26 @@ export default {
                     timestamp: res.data.timestamp, // 必填，生成签名的时间戳
                     nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
                     signature: res.data.signature, // 必填，签名
-                    jsApiList: ['openLocation'] // 必填，需要使用的JS接口列表
+                    jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage','openLocation'] // 必填，需要使用的JS接口列表
                 })
                 wx.ready(function(res) { //通过ready接口处理成功验证 // config信息验证成功后会执行ready方法
                     wx.openLocation({
-                    latitude: parseFloat(e.point.lat),//目的地latitude
-                    longitude: parseFloat(e.point.lng),//目的地longitude
-                    name: city,
-                    address: city,
-                    scale: 15,//地图缩放大小，可根据情况具体调整
-                    infoUrl: '', // 在查看位置界面底部显示的超链接,可点击跳转
-                    success: function (res) {
-                            //  alert('成功');	        
-                    },
-                });
+                        latitude: parseFloat(e.point.lat),//目的地latitude
+                        longitude: parseFloat(e.point.lng),//目的地longitude
+                        name: city,
+                        address: city,
+                        scale: 15,//地图缩放大小，可根据情况具体调整
+                        infoUrl: '', // 在查看位置界面底部显示的超链接,可点击跳转
+                        success: function (res) {
+                            //   alert('成功');	        
+                        },
+                    });
                 })
             })
+            wx.error(function(res){//通过error接口处理失败验证
+                // config信息验证失败会执行error函数
+                console.log(res)
+            });
         }else{
             if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
                 //ios
@@ -479,17 +532,46 @@ export default {
                     }
                     that.centerSynopsis=data.centerList[0].centerSynopsis//体验中心概述,
                     that.phone = data.centerList[0].phone
-                    that.city = data.centerList[0].city
+                    that.city = data.centerList[0].address
                     document.title ='大唐财富 · '+ that.centerName
                     that.GasyncSDKConifg(that.centerName+'微站','因为胜任  所以信任')
                 }
-                that.photo=data.photo;   //头像
-                that.userName= data.name;   //名称
-                that.mobile = data.mobile;  //手机号
                 that.handler({BMap, map})
                 
             }else{
                 that.isShowPage=true
+            }
+        })
+    },
+    getuserName:function(){
+        if(!this.$route.query.shareUserId == false){
+            var userid = this.$route.query.shareUserId
+        }else{
+            var userid = this.userId
+        }
+        let that = this;
+        Indicator.open();
+        that.groupId = that.$route.query.groupId;
+        var param=Base64.encode('{"groupId":"'+that.groupId+'","userId":"'+userid+'"}');
+        axios({
+            method:'get',
+            url:'/olmgweb/wzApiController/getAreaAndCenterInfo',//获取大区信息及其下属体验中心信息
+            params:{
+                param:param,
+                osFlag:'3'
+            }
+        })
+        .then(function(res) {//成功之后
+            Indicator.close();
+            var data=Base64.decode(res.data);
+            data=jQuery.parseJSON(data);
+            console.log(data)
+            var retCode=data.retCode;
+            var retMsg=data.retMsg;
+            if(retCode == 0){
+                that.photo=data.photo;   //头像
+                that.userName= data.name;   //名称
+                that.mobile = data.mobile;  //手机号
             }
         })
     },
@@ -546,48 +628,57 @@ export default {
         showMa:function(){
            // this.cover_maIf=true;//显示放大的二维码；
            this.popupVisible=true;
-            _czc.push(['_trackEvent', this.centerName ,'H5DepartmentWXClick']);//体验中心服务号二维码点击量
+            _czc.push(['_trackEvent', this.centerName+'服务号二维码' ,'H5DepartmentWXClick']);//体验中心服务号二维码点击量
         },
         download:function(){//下载大唐财富师App
-            var browser = {
-	            versions: function() {
-	                var u = navigator.userAgent,
-	                    app = navigator.appVersion;
-	                return { //移动终端浏览器版本信息   
-	                    ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端  
-	                    android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器  
-	                    iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器  
-	                };
-	            }(),      
-	            language: (navigator.browserLanguage || navigator.language).toLowerCase()
-	        }
-            var android = browser.versions.android;
-            var iOS = browser.versions.ios;
-
-            /*唤起APP的方法*/
-            if(iOS){ 
+            if(!this.shareflag == false){
+            var ua = navigator.userAgent.toLowerCase();
+            var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;  　　//ios终端
+            var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+            if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
+                this.CallApp=true
+                window.scrollTo(0,0);
+                return
+            }else{
+                var browser = {
+                    versions: function() {
+                        var u = navigator.userAgent,
+                            app = navigator.appVersion;
+                        return { //移动终端浏览器版本信息   
+                            ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端  
+                            android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器  
+                            iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器  
+                        };
+                    }(),      
+                    language: (navigator.browserLanguage || navigator.language).toLowerCase()
+                }
+                var android = browser.versions.android;
+                var iOS = browser.versions.ios;
+                /*唤起APP的方法*/
+                if(iOS){ 
+                        window.location='tangyuanbaodatang://platformapi/startapp?param='
+                        var clickedAt = +new Date;  
+                        setTimeout(function(){
+                            !window.document.webkitHidden && setTimeout(function(){ 
+                                if (+new Date - clickedAt < 2000){  
+                                    window.location = 'https://interface.tdyhfund.com/launcher/download.html?channel=app&name=dtcf';  
+                                }  
+                            }, 500);       
+                        }, 500)
+                }else if(android){
                     window.location='tangyuanbaodatang://platformapi/startapp?param='
                     var clickedAt = +new Date;  
-                    setTimeout(function(){
-                        !window.document.webkitHidden && setTimeout(function(){ 
-                            if (+new Date - clickedAt < 2000){  
-                                window.location = 'https://interface.tdyhfund.com/launcher/download.html?channel=app&name=dtcf';  
-                            }  
-                        }, 500);       
-                    }, 2500)
-            }else if(android){
-                window.location='tangyuanbaodatang://platformapi/startapp?param='+str
-                var clickedAt = +new Date;  
-                    setTimeout(function(){
-                        !window.document.webkitHidden && setTimeout(function(){ 
-                            if (+new Date - clickedAt < 2000){  
-                                window.location = 'https://interface.tdyhfund.com/launcher/download.html?channel=app&name=dtcf';  
-                            }  
-                        }, 500);       
-                    }, 2500)
-                }
-            _czc.push(['_trackEvent', this.centerName ,'H5DepartmentAPPClick']);//体验中心APP二维码点击量
-    
+                        setTimeout(function(){
+                            !window.document.webkitHidden && setTimeout(function(){ 
+                                if (+new Date() - clickedAt < 5000){
+                                    window.location = 'https://interface.tdyhfund.com/launcher/download.html?channel=app&name=dtcf';  
+                                }  
+                            }, 800);       
+                        }, 800)
+                    }
+            }
+            _czc.push(['_trackEvent', this.centerName+'APP二维码' ,'H5DepartmentAPPClick']);//体验中心APP二维码点击量 
+            }
         },
         openActiveDetail:function(id,n){
             var actName=encodeURIComponent(n);
@@ -601,14 +692,20 @@ export default {
                 //window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName+'&comefrom=tangguan';
                 //return;
                 var sendstr= '{"title":"活动详情","activeId":"'+id+'"}'; 				
-                alert(sendstr)
-                if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
-                    //ios
-                    window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///jumpActive:'+sendstr});
-                } else if (/(Android)/i.test(navigator.userAgent)) {
-                    //android
-                    window.AndroidFunction.jumpActive(sendstr);
-                }
+               // alert(sendstr)
+                if(!this.shareflag == false){
+                    window.location.href=this.Host+'weixin-h5/index.html#/activeDetail?actId='+id+'&actName='+actName;
+                    return
+                }else{
+                    if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+                        //ios
+                        window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///jumpActive:'+sendstr});
+                    } else if (/(Android)/i.test(navigator.userAgent)) {
+                        //android
+                        window.AndroidFunction.jumpActive(sendstr);
+                    }
+               }
+                
             }
             
         },
@@ -620,15 +717,21 @@ export default {
                 window.location.href=this.Host+'weixin-h5/index.html#/active?groupId='+this.$route.query.groupId;
                 return
             }else{
-                 window.location.href=this.Host+'weixin-h5/index.html#/active?groupId='+this.$route.query.groupId+'&comefrom=tangchao&Name='+encodeURIComponent(this.centerName);
+                if(!this.shareflag == false){
+                    window.location.href=this.Host+'weixin-h5/index.html#/active?groupId='+this.$route.query.groupId;
+                    return
+                }else{
+                    window.location.href=this.Host+'weixin-h5/index.html#/active?groupId='+this.$route.query.groupId+'&comefrom=tangchao&Name='+encodeURIComponent(this.centerName);
+                }
                 return;
             }
-            _czc.push(['_trackEvent', this.centerName ,'H5DepartmentEventsClick']);//体验中心活动更多点击量
+            _czc.push(['_trackEvent', this.centerName+'活动' ,'H5DepartmentEventsClick']);//体验中心活动更多点击量
         },
-          getActive:function(){//获取活动
+        getActive:function(id){//获取活动
             let that = this;
             Indicator.open();
             var param={"pageNo":"1","actStatus":that.actStatus,"officeId":that.$route.query.groupId}
+            console.log(param)
             axios({
                 method:'get',
                 url:'/wxservice/wxexternal?opName=getactiveinfo',//获取活动列表
@@ -654,30 +757,60 @@ export default {
                        that.activeShow=false;
                    }
                }else if(itemList.length<=2){
-                that.activeMore=false;//不显示更多活动按钮
-                that.actList=itemList;
+               // that.activeMore=false;//不显示更多活动按钮
+                if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
+                    that.length=itemList.length
+                    that.actStatus=0;
+                    that.getActive('1');
+                    that.actList=itemList;
+                    return;
+                }else if(that.actStatus==0){
+                    that.length2=itemList.length
+                    if(that.length2+that.length<=2){
+                        console.log(2)
+                        that.actStatus=2;
+                        if(that.length2==0){
+                            that.getActive('1');
+                        }
+                        that.actList=itemList;
+                        return;
+                    }
+                }else{
+                    that.length3=itemList.length
+                    if(that.length2+that.length+that.length3<=2){
+                        that.activeMore=false;//不显示更多活动按钮
+                       // return;
+                    }
+                    that.actList=itemList;
+                }
                }else{
                 that.activeMore=true;//显示更多活动按钮
-                that.actList=itemList;
+                if(id != '1'){
+                    that.actList=itemList;
+                }
                }
                 
             })
         },
         toWealthList(){
-            _czc.push(['_trackEvent', this.centerName ,'H5DepartmentFinancialPlannersCardClick']);//体验中心财富师card点击量
+            _czc.push(['_trackEvent', this.centerName+'财富师card' ,'H5DepartmentFinancialPlannersCardClick']);//体验中心财富师card点击量
             console.log(this.groupId)
             this.$router.push({
                 path:'/wealthTeacherList',
                 name:'wealthTeacherList',
                 query:{
                     groupId:this.groupId,//体验中心的Id
-                    userId:this.userId,//userId;
-                    userName:this.$route.query.userName
+                    userId:this.$route.query.userId,//userId;
+                    userName:this.$route.query.userName,
+                    shareflag:this.shareflag,
+                    shareUserId:this.$route.query.shareUserId,
+                    showCard:this.$route.query.showCard,
+                    shareId:this.$route.query.shareId,
                 }
             })
         },
         czname(name){
-            _czc.push(['_trackEvent', this.centerName,'H5DepartmentBannerClick',name]);//大区banner点击量
+            _czc.push(['_trackEvent', this.centerName+'banner','H5DepartmentBannerClick',name]);//大区banner点击量
         }
     },
     components:{Swipe, SwipeItem,Swiper},
@@ -691,10 +824,14 @@ export default {
             if ((/micromessenger/i).test(ua)) {//isWeixinBrowser()//判断是不是微信 
                 return
             }else{
-                var urlstr = window.location.href;
+                if(!this.$route.query.shareId ==false){
+                    var urlstr = location.href.split('?')[0]+'?userId='+this.$route.query.shareId+'&groupId='+this.$route.query.groupId+'&areaId='+this.$route.query.areaId+'&userName='+this.$route.query.userName+'&shareflag=1';
+                }else{
+                    var urlstr = window.location.href+'&shareflag=1';
+                }
                 var title = this.centerName+'微站'
                 var sendstr= '{"title":"'+title+'","content":"因为胜任  所以信任","urlstr":"'+urlstr+'"}'; 				
-                alert(sendstr)
+               // alert(sendstr)
                 if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
                     //ios
                     window.webkit.messageHandlers.AppModel.postMessage({body: 'objc:///shareMessage:'+sendstr});
@@ -705,6 +842,7 @@ export default {
             }
         }
        }
+       
         this.initS('wcontainer',2.5);
         this.initS2('wealthTeacherContainer',1.2);
         // new swiper = new Swiper('.wealthTeacherContainer', {
@@ -723,6 +861,7 @@ export default {
         this.userId = this.$route.query.userId;
          //this.client=this.$route.query.client;
          this.areaId=this.$route.query.areaId;
+         this.shareflag=this.$route.query.shareflag;
          if(!this.areaId==false){
             this.ifBackarea=true;//显示返回按钮；
          }else{
@@ -731,6 +870,7 @@ export default {
          this.ifShare();//是否显示分享的财富师card;
         this.getCenterUsers();
         //this.getCenterInfo();
+        this.getuserName();
         this.getBanner();
         this.getActive()//获取活动列表；
     }
@@ -739,9 +879,6 @@ export default {
 
 <style>
     @import 'area.css';
-    .tiyanTop{
-        min-height: 12rem;
-    }
     .tiyanTop .areaIntr{
         color: #4D3838;
         text-shadow: none;
@@ -792,7 +929,7 @@ export default {
       transform: scale(1);
 	}
     .card_left{
-        /* width: 5.333333rem; */
+        width: 4.586667rem;
         height: 4.586667rem;
         z-index: 1000;
         position: absolute;
@@ -861,6 +998,7 @@ export default {
     }
     .contactUs{
         padding-top: .53333rem;
+        background: #fff;
     }
     .contactUs p{
         font-size: .32rem;
