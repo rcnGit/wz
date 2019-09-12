@@ -275,6 +275,7 @@ export default {
                         that.centerName=data.centerList[0].centerName//体验中心名称,
                         document.title ='大唐财富 · '+ that.centerName;
                         that.GasyncSDKConifg(that.centerName+'微站','因为胜任  所以信任')
+                        _czc.push(['_trackEvent', that.centerName+'体验中心财富师' ,'H5DepartFinancialPlanners']);//体验中心财富师
                     }
                     that.photo=data.photo;   //头像
                     that.userName= data.name;   //名称
