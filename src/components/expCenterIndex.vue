@@ -535,7 +535,8 @@ export default {
                     that.city = data.centerList[0].address
                     document.title ='大唐财富 · '+ that.centerName
                     that.GasyncSDKConifg(that.centerName+'微站','因为胜任  所以信任')
-                    _czc.push(['_trackEvent', that.centerName+'体验中心页' ,'H5DepartmentHomepage']);//体验中心页
+                    _czc.push(['_trackEvent', '体验中心页' ,'H5DepartmentHomepage','all']);//体验中心页
+                    _czc.push(['_trackEvent', that.centerName+'体验中心页' ,'H5DepartmentHomepage',that.centerName]);//体验中心页
                 }
                 that.handler({BMap, map})
                 

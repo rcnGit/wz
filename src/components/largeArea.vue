@@ -432,7 +432,8 @@ export default {
                     // that.centerList=data.centerList
                     document.title ='大唐财富 · '+ that.areaName;
                     that.GasyncSDKConifg(that.areaName+'微站','私人银行服务的领航者')
-                    _czc.push(['_trackEvent', that.areaName+'大区首页' ,'H5AreaHomepage']);//大区首页
+                    _czc.push(['_trackEvent', '大区首页' ,'H5AreaHomepage','all']);//大区首页
+                    _czc.push(['_trackEvent', that.areaName+'大区首页' ,'H5AreaHomepage',that.areaName]);//大区首页
                 }else{
                     that.isShowPage=true
                 }
