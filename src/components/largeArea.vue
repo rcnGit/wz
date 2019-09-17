@@ -50,10 +50,12 @@
                     <p class="loc_tit">私人银行服务在身边</p>
                     <!-- 浙江大区 -->
                     <div class="locOne locOneZ1"  @click="tolocation($event,'Z1','杭州')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="true"/><img src="./img/location.png" class="locImg" v-show="false"/>杭州体验中心</div>
-                    <div class="locOne locOneZ2"  @click="tolocation($event,'Z2','金华')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>金华体验中心</div>
+                    <div class="locOne locOneZ2"  @click="tolocation($event,'Z2','湖州')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>湖州一部体验中心</div>
                     <div class="locOne locOneZ3"  @click="tolocation($event,'Z3','宁波')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>宁波体验中心</div>
                     <div class="locOne locOneZ4"  @click="tolocation($event,'Z4','温州')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>温州体验中心</div>
                     <div class="locOne locOneZ5"  @click="tolocation($event,'Z5','义乌')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>义乌体验中心</div>
+                    <div class="locOne locOneZ6"  @click="tolocation($event,'Z6','慈溪')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>慈溪体验中心</div>
+                    <div class="locOne locOneZ7"  @click="tolocation($event,'Z7','富阳')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>富阳体验中心</div>
                 </div>
                  <div class="expCenter">
                     <!-- <div class="expOne">杭州一部体验中心</div><div class="expOne">杭州一部体验中心</div><div class="expOne">杭州一部体验中心</div> -->
@@ -64,13 +66,28 @@
                 <img src="./img/mapX.png" class="map"/>
                 <div class="location locationZ">
                     <p class="loc_tit">私人银行服务在身边</p>
-                    <!-- 浙江大区 -->
+                    <!-- 西南大区 -->
                     <div class="locOne locOneX1"  @click="tolocation($event,'X1','成都')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="true"/><img src="./img/location.png" class="locImg" v-show="false"/>成都体验中心</div>
                     <div class="locOne locOneX2"  @click="tolocation($event,'X2','贵阳')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>贵阳体验中心</div>
                     <div class="locOne locOneX3"  @click="tolocation($event,'X3','昆明')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>昆明体验中心</div>
                     <div class="locOne locOneX4"  @click="tolocation($event,'X4','南宁')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>南宁体验中心</div>
                     <div class="locOne locOneX5"  @click="tolocation($event,'X5','玉溪')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>玉溪体验中心</div>
                     <div class="locOne locOneX6"  @click="tolocation($event,'X6','重庆')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>重庆体验中心</div>
+                </div>
+                 <div class="expCenter">
+                    <!-- <div class="expOne">杭州一部体验中心</div><div class="expOne">杭州一部体验中心</div><div class="expOne">杭州一部体验中心</div> -->
+                    <div class="expOne" v-for="item in centerList" @click="jumpExp(item.groupId)">{{item.centerName}}</div>
+                </div>
+             </div> <!-- -->
+            <div class="areaMapBox" v-if='areaId=="2e786cbcd4554872ab06686f72a98611"'>
+                <img src="./img/mapS.png" class="map"/>
+                <div class="location locationZ">
+                    <p class="loc_tit">私人银行服务在身边</p>
+                    <!-- 私行大区 -->
+                    <div class="locOne locOnes1"  @click="tolocation($event,'s1','北京')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="true"/><img src="./img/location.png" class="locImg" v-show="false"/>北京体验中心</div>
+                    <div class="locOne locOnes2"  @click="tolocation($event,'s2','温州')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>温州体验中心</div>
+                    <div class="locOne locOnes3"  @click="tolocation($event,'s3','兰州')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>兰州体验中心</div>
+                    <div class="locOne locOnes4"  @click="tolocation($event,'s4','南京')"><img src="./img/locationChoose.png" class="locImg locImgChoose" v-show="false"/><img src="./img/location.png" class="locImg" v-show="true"/>南京体验中心</div>
                 </div>
                  <div class="expCenter">
                     <!-- <div class="expOne">杭州一部体验中心</div><div class="expOne">杭州一部体验中心</div><div class="expOne">杭州一部体验中心</div> -->
@@ -210,17 +227,23 @@ export default {
             centerList:'',
             shareflag:'',
             centerListZ1:[{'centerName':'直属体验中心','groupId':'175390b5ebe94ba899451f4b12041b29'},{'centerName':'杭州一部体验中心','groupId':'5533b21cc352414fbec7d012f74f243a'},{'centerName':'杭州二部体验中心','groupId':'20f6e8a1d2d6444fb3a2c9079f16b3bc'}],
-            centerListZ2:[{'centerName':'金华体验中心','groupId':'f44a5f67030943038e41ae04ffe0f81d'}],
-            centerListZ3:[{'centerName':'宁波三部体验中心','groupId':'d10a21a0cd80457aa07f424fe0ac1b00'},{'centerName':'宁波四部体验中心','groupId':'0bcb5dc352cd4401b892f0a7c540a198'}],
+            centerListZ2:[{'centerName':'湖州一部体验中心','groupId':'20c5823bcbc641b089d7ff8ff60667dc'}],
+            centerListZ3:[{'centerName':'宁波市区体验中心','groupId':'d10a21a0cd80457aa07f424fe0ac1b00'},{'centerName':'余姚体验中心','groupId':'0bcb5dc352cd4401b892f0a7c540a198'}],
             centerListZ4:[{'centerName':' 温州一部体验中心','groupId':'07336b73be7e48f09a524ba996778deb'},{'centerName':' 温州二部体验中心','groupId':'1e4187451e294b1a90918ae8855845fe'}],
             centerListZ5:[{'centerName':'义乌体验中心','groupId':'4627cfdd362c45b8a090fd76c9ad977b'}],
+            centerListZ6:[{'centerName':'慈溪体验中心','groupId':'21abe5a8e3c44641ac297c5c3d67326b'}],
+            centerListZ7:[{'centerName':'富阳体验中心','groupId':'ede9999beccd40208a06049271653e0c'}],
             centerListX1:[{'centerName':'成都一部体验中心','groupId':'f04f44225ff444dca52bc1887b58caf0'},{'centerName':'成都二部体验中心','groupId':'30e096cd5b2944ffa49e42d802d7450f'},{'centerName':'成都三部体验中心','groupId':'7f3105fea9344409aadea1958eb86125'}],
             centerListX2:[{'centerName':'贵阳体验中心','groupId':'8997653549cb4b899cacf143c3d635df'}],
             centerListX3:[{'centerName':' 昆明一部体验中心','groupId':'e19015e0f5fb4d05933ae7b2f1196e18'},{'centerName':'昆明二部体验中心','groupId':'24a781f515734589be8698cd16b63d70'}],
             centerListX4:[{'centerName':' 南宁体验中心','groupId':'8468cc994d3b4fe889b24b8db259ca48'}],
             centerListX5:[{'centerName':'玉溪体验中心','groupId':'01e678abe8b04ea0b7b25fa8123fe314'}],
             centerListX6:[{'centerName':'重庆一部体验中心','groupId':'38eb04b2a4b843459876ac45b5f720ca'},{'centerName':'重庆二部体验中心','groupId':'57c3b8964cea49b8ba62e14754770e64'}],
-        }
+            centerListS1:[{'centerName':'私行第一体验中心','groupId':'8026d2d41c5d4c90a703bd5b58a4ac7e'},{'centerName':'私行第二体验中心','groupId':'0cf3dc41531a4ab0bfa07b59c66a6b37'},{'centerName':'私行第五体验中心','groupId':'b0219c64227b4bcc8ac3ee5507dc18c4'},{'centerName':'私行第九体验中心','groupId':'c3de10b461ea4303b72a1468fc173d31'},{'centerName':'私行第八体验中心','groupId':'9bbd01b440c644be9f05e191fe431756'},{'centerName':'私行第七体验中心','groupId':'c8cd1b66f57742bfa752a9016162730f'}],
+            centerListS2:[{'centerName':'私行第六体验中心','groupId':'446830e0762c463e86bc16af8276802c'}],
+            centerListS3:[{'centerName':' 私行第四体验中心','groupId':'57a985dc14db4854a9e89034a8e7a04d'}],
+            centerListS4:[{'centerName':' 私行第三体验中心','groupId':'07e4854378674ac7b99dd57c55817d15'}],
+       }
     },
     methods:{
         toCard(){
@@ -606,19 +629,22 @@ export default {
             }else if(z=='Z2'){
                 this.centerList=this.centerListZ2;
             }else if(z=='Z3'){
-
                 this.centerList=this.centerListZ3;
                 console.log(this.centerListZ3);
             }else if(z=='Z4'){
                 this.centerList=this.centerListZ4;
             }else if(z=='Z5'){
                 this.centerList=this.centerListZ5;
+            }else if(z=='Z6'){
+                this.centerList=this.centerListZ6;
+            }else if(z=='Z7'){
+                this.centerList=this.centerListZ7;
             }else if(z=='X1'){//西南大区
+
                 this.centerList=this.centerListX1;
             }else if(z=='X2'){
                 this.centerList=this.centerListX2;
             }else if(z=='X3'){
-
                 this.centerList=this.centerListX3;
                 console.log(this.centerListX3);
             }else if(z=='X4'){
@@ -627,6 +653,15 @@ export default {
                 this.centerList=this.centerListX5;
             }else if(z=='X6'){
                 this.centerList=this.centerListX6;
+            }else if(z=='s1'){//私行大区
+            
+                this.centerList=this.centerListS1;
+            }else if(z=='s2'){
+                this.centerList=this.centerListS2;
+            }else if(z=='s3'){
+                this.centerList=this.centerListS3;
+            }else if(z=='s4'){
+                this.centerList=this.centerListS4;
             }
            
         },
@@ -674,6 +709,8 @@ export default {
             this.centerList=this.centerListZ1;
         }else if(this.areaId=='708407bb88be4da89e5e59bdd4cc3c85'){
             this.centerList=this.centerListX1;
+        }else if(this.areaId=='2e786cbcd4554872ab06686f72a98611'){
+            this.centerList=this.centerListS1;
         }
         this.ifShare();//判断是不是分享到微信
         //this.client=this.$route.query.client;
@@ -705,19 +742,27 @@ export default {
         left: 33%;
     }
     .locationZ .locOneZ2{
-        top: 37%;
-        left: 32%;
+        top: 10%;
+        left: 36%;
     }
     .locationZ .locOneZ3{
         top: 29%;
         left: 64%;
     }
     .locationZ .locOneZ4{
-        top: 60%;
+        top: 61%;
         left: 41%;
     }
     .locationZ .locOneZ5{
-        top: 44%;
+        top: 50%;
+        left: 46%;
+    }
+    .locationZ .locOneZ6{
+        top: 23%;
+        left: 59%;
+    }
+      .locationZ .locOneZ7{
+        top: 33%;
         left: 39%;
     }
     .locationZ .locOneX1{
@@ -743,6 +788,22 @@ export default {
     .locationZ .locOneX6{
         top: 29%;
         left: 52%;
+    }
+      .locationZ .locOnes1{
+        top: 14%;
+        left: 55%;
+    }
+    .locationZ .locOnes2{
+        top: 64%;
+        left: 65%;
+    }
+    .locationZ .locOnes3{
+        top: 31%;
+        left: 14%;
+    }
+    .locationZ .locOnes4{
+        top: 47%;
+        left: 64%;
     }
     .locationZ .locImg{
         width:.506667rem;
