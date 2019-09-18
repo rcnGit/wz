@@ -3,18 +3,18 @@ import axios from 'axios';
 
 export default {
     install(Vue, options) {
-      //  Vue.prototype.Host='https://interface.tdyhfund.com/'
-        Vue.prototype.Host="https://weixin-test-interface.tdyhfund.com/"
-       // Vue.prototype.APPID='wx42b6456eeafbe956'  //生产
-       Vue.prototype.APPID='wx1f686b130ea97432'
+        Vue.prototype.Host='https://interface.tdyhfund.com/'
+       // Vue.prototype.Host="https://weixin-test-interface.tdyhfund.com/"
+        Vue.prototype.APPID='wx42b6456eeafbe956'  //生产
+      // Vue.prototype.APPID='wx1f686b130ea97432'
        // Vue.prototype.tgHost="http://172.16.8.82:8888/dthtml/HTML5/DTCFS_V4.2.2_190110/html/shared_card.html" 
-        Vue.prototype.tgHost="https://test-interface.tdyhfund.com:8443/dthtml/HTML5/DTCFS/html/shared_card.html"
-       // Vue.prototype.tgHost='https://interface.tdyhfund.com/dthtml/HTML5/DTCFS/html/shared_card.html'   //糖罐app财富师名片页
+       // Vue.prototype.tgHost="https://test-interface.tdyhfund.com:8443/dthtml/HTML5/DTCFS/html/shared_card.html"
+        Vue.prototype.tgHost='https://interface.tdyhfund.com/dthtml/HTML5/DTCFS/html/shared_card.html'   //糖罐app财富师名片页
        
        
         Vue.prototype.GasyncSDKConifg = function (tit,des) {
-            var url ='https://weixin-test-interface.tdyhfund.com/wxservice/core/getProductJSSDKConfigure.mm?pageUrl='+Base64.encode(window.location.href);
-	        //var url ='https://interface.tdyhfund.com/wxservice/core/getProductJSSDKConfigure.mm?pageUrl='+Base64.encode(window.location.href);
+           // var url ='https://weixin-test-interface.tdyhfund.com/wxservice/core/getProductJSSDKConfigure.mm?pageUrl='+Base64.encode(window.location.href);
+	        var url ='https://interface.tdyhfund.com/wxservice/core/getProductJSSDKConfigure.mm?pageUrl='+Base64.encode(window.location.href);
             var sharelink = window.location.href
             axios.get(url)
                 .then(function (res) {

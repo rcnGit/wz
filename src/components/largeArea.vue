@@ -226,6 +226,7 @@ export default {
             baseImg:'./img/areaBg.png',
             centerList:'',
             shareflag:'',
+            showitem1:false,
             centerListZ1:[{'centerName':'直属体验中心','groupId':'175390b5ebe94ba899451f4b12041b29'},{'centerName':'杭州一部体验中心','groupId':'5533b21cc352414fbec7d012f74f243a'},{'centerName':'杭州二部体验中心','groupId':'20f6e8a1d2d6444fb3a2c9079f16b3bc'}],
             centerListZ2:[{'centerName':'湖州一部体验中心','groupId':'20c5823bcbc641b089d7ff8ff60667dc'}],
             centerListZ3:[{'centerName':'宁波市区体验中心','groupId':'d10a21a0cd80457aa07f424fe0ac1b00'},{'centerName':'余姚体验中心','groupId':'0bcb5dc352cd4401b892f0a7c540a198'}],
@@ -239,7 +240,7 @@ export default {
             centerListX4:[{'centerName':' 南宁体验中心','groupId':'8468cc994d3b4fe889b24b8db259ca48'}],
             centerListX5:[{'centerName':'玉溪体验中心','groupId':'01e678abe8b04ea0b7b25fa8123fe314'}],
             centerListX6:[{'centerName':'重庆一部体验中心','groupId':'38eb04b2a4b843459876ac45b5f720ca'},{'centerName':'重庆二部体验中心','groupId':'57c3b8964cea49b8ba62e14754770e64'}],
-            centerListS1:[{'centerName':'私行第一体验中心','groupId':'8026d2d41c5d4c90a703bd5b58a4ac7e'},{'centerName':'私行第二体验中心','groupId':'0cf3dc41531a4ab0bfa07b59c66a6b37'},{'centerName':'私行第五体验中心','groupId':'b0219c64227b4bcc8ac3ee5507dc18c4'},{'centerName':'私行第九体验中心','groupId':'c3de10b461ea4303b72a1468fc173d31'},{'centerName':'私行第八体验中心','groupId':'9bbd01b440c644be9f05e191fe431756'},{'centerName':'私行第七体验中心','groupId':'c8cd1b66f57742bfa752a9016162730f'}],
+            centerListS1:[{'centerName':'私行第一体验中心','groupId':'8026d2d41c5d4c90a703bd5b58a4ac7e'},{'centerName':'私行第二体验中心','groupId':'0cf3dc41531a4ab0bfa07b59c66a6b37'},{'centerName':'私行第五体验中心','groupId':'b0219c64227b4bcc8ac3ee5507dc18c4'},{'centerName':'私行第七体验中心','groupId':'c8cd1b66f57742bfa752a9016162730f'},{'centerName':'私行第八体验中心','groupId':'9bbd01b440c644be9f05e191fe431756'},{'centerName':'私行第九体验中心','groupId':'c3de10b461ea4303b72a1468fc173d31'}],
             centerListS2:[{'centerName':'私行第六体验中心','groupId':'446830e0762c463e86bc16af8276802c'}],
             centerListS3:[{'centerName':' 私行第四体验中心','groupId':'57a985dc14db4854a9e89034a8e7a04d'}],
             centerListS4:[{'centerName':' 私行第三体验中心','groupId':'07e4854378674ac7b99dd57c55817d15'}],
@@ -506,54 +507,61 @@ export default {
             })
             .then(function(res) {//成功之后
                 Indicator.close();
-                 console.log(res.data)
+                console.log(res.data)
+                var retCode=res.data.retCode
                 var itemList=res.data.itemList;
-               if(itemList.length==0){
-                   if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
-                       that.actStatus=0;
-                       that.getActive();
-                        return;
-                   }else if(that.actStatus==0){
-                       that.actStatus=2;
-                       that.getActive();
-                       return;
-                   }else{
-                       //隐藏该模块
-                       that.activeShow=false;
-                   }
-               }else if(itemList.length<=2){
-               // that.activeMore=false;//不显示更多活动按钮
-                if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
-                    that.length=itemList.length
-                    that.actStatus=0;
-                    that.getActive('1');
-                    that.actList=itemList;
-                    return;
-                }else if(that.actStatus==0){
-                    that.length2=itemList.length
-                    if(that.length2+that.length<=2){
-                        that.actStatus=2;
-                        if(that.length2==0){
-                            that.getActive('1');
+                if(retCode == 0){
+                    if(itemList.length==0){
+                        if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
+                            that.actStatus=0;
+                            that.getActive();
+                                return;
+                        }else if(that.actStatus==0){
+                            that.actStatus=2;
+                            that.getActive();
+                            return;
+                        }else{
+                            //隐藏该模块
+                            that.activeShow=false;
                         }
-                        that.actList=itemList;
-                        return;
+                    }else if(itemList.length<=2){
+                        if(itemList.length!=0 && that.actStatus==1){
+                            that.showitem1=true
+                        }
+                    // that.activeMore=false;//不显示更多活动按钮
+                        if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
+                            that.length=itemList.length
+                            that.actStatus=0;
+                            that.getActive('1');
+                            that.actList=itemList;
+                            return;
+                        }else if(that.actStatus==0){
+                            that.length2=itemList.length
+                            if(that.length2+that.length<=2){
+                                that.actStatus=2;
+                                if(that.length2==0){
+                                    that.getActive('1');
+                                }
+                                if(that.showitem1 == false){
+                                    that.actList=itemList;
+                                }
+                                return;
+                            }
+                        }else{
+                            that.length3=itemList.length
+                            if(that.length2+that.length+that.length3<=2){
+                                that.activeMore=false;//不显示更多活动按钮
+                            // return;
+                            }
+                            that.actList=itemList;
+                        }
+                    }else{
+                        that.activeMore=true;//显示更多活动按钮
+                        if(id != '1'){
+                            that.actList=itemList;
+                        }
                     }
-                }else{
-                    that.length3=itemList.length
-                    if(that.length2+that.length+that.length3<=2){
-                        that.activeMore=false;//不显示更多活动按钮
-                       // return;
-                    }
-                    that.actList=itemList;
                 }
-               }else{
-                that.activeMore=true;//显示更多活动按钮
-                if(id != '1'){
-                    that.actList=itemList;
-                }
-               }
-                
             })
         },
         jumpExp:function(id){

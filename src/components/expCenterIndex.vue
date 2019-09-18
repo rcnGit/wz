@@ -236,7 +236,8 @@ export default {
             length:'',
             length2:'',
             length3:'',
-            shareflag:''
+            shareflag:'',
+            showitem1:false,
         }
     },
     methods:{
@@ -536,7 +537,7 @@ export default {
                     document.title ='大唐财富 · '+ that.centerName
                     that.GasyncSDKConifg(that.centerName+'微站','因为胜任  所以信任')
                     _czc.push(['_trackEvent', '体验中心页' ,'H5DepartmentHomepage','all']);//体验中心页
-                    _czc.push(['_trackEvent', that.centerName+'体验中心页' ,'H5DepartmentHomepage',that.centerName]);//体验中心页
+                    _czc.push(['_trackEvent', that.centerName+'页' ,'H5DepartmentHomepage',that.centerName]);//体验中心页
                 }
                 that.handler({BMap, map})
                 
@@ -743,55 +744,62 @@ export default {
             })
             .then(function(res) {//成功之后
                 Indicator.close();
-                 console.log(res.data)
+                console.log(res.data)
+                var retCode=res.data.retCode
                 var itemList=res.data.itemList;
-               if(itemList.length==0){
-                   if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
-                       that.actStatus=0;
-                       that.getActive();
-                        return;
-                   }else if(that.actStatus==0){
-                       that.actStatus=2;
-                       that.getActive();
-                       return;
-                   }else{
-                       //隐藏该模块
-                       that.activeShow=false;
-                   }
-               }else if(itemList.length<=2){
-               // that.activeMore=false;//不显示更多活动按钮
-                if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
-                    that.length=itemList.length
-                    that.actStatus=0;
-                    that.getActive('1');
-                    that.actList=itemList;
-                    return;
-                }else if(that.actStatus==0){
-                    that.length2=itemList.length
-                    if(that.length2+that.length<=2){
-                        console.log(2)
-                        that.actStatus=2;
-                        if(that.length2==0){
-                            that.getActive('1');
+                if(retCode == 0){
+                    if(itemList.length==0){
+                        if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
+                            that.actStatus=0;
+                            that.getActive();
+                                return;
+                        }else if(that.actStatus==0){
+                            that.actStatus=2;
+                            that.getActive();
+                            return;
+                        }else{
+                            //隐藏该模块
+                            that.activeShow=false;
                         }
-                        that.actList=itemList;
-                        return;
+                    }else if(itemList.length<=2){
+                        if(itemList.length!=0 && that.actStatus==1){
+                            that.showitem1=true
+                        }
+                    // that.activeMore=false;//不显示更多活动按钮
+                        if(that.actStatus==1){//状态 0即将举办 1举办中 2已举办
+                            that.length=itemList.length
+                            that.actStatus=0;
+                            that.getActive('1');
+                            that.actList=itemList;
+                            return;
+                        }else if(that.actStatus==0){
+                            that.length2=itemList.length
+                            if(that.length2+that.length<=2){
+                                console.log(2)
+                                that.actStatus=2;
+                                if(that.length2==0){
+                                    that.getActive('1');
+                                }
+                                if(that.showitem1 == false){
+                                    that.actList=itemList;
+                                }
+                                return;
+                            }
+                        }else{
+                            that.length3=itemList.length
+                            if(that.length2+that.length+that.length3<=2){
+                                that.activeMore=false;//不显示更多活动按钮
+                            // return;
+                            }
+                            that.actList=itemList;
+                        }
+                    }else{
+                        that.activeMore=true;//显示更多活动按钮
+                        if(id != '1'){
+                            that.actList=itemList;
+                        }
                     }
-                }else{
-                    that.length3=itemList.length
-                    if(that.length2+that.length+that.length3<=2){
-                        that.activeMore=false;//不显示更多活动按钮
-                       // return;
-                    }
-                    that.actList=itemList;
                 }
-               }else{
-                that.activeMore=true;//显示更多活动按钮
-                if(id != '1'){
-                    that.actList=itemList;
-                }
-               }
-                
             })
         },
         toWealthList(){
