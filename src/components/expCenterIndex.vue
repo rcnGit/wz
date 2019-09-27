@@ -161,7 +161,12 @@
         <div class="knowUs pl26 pr26">
             <div class="areaTitle"><img src="./img/areaTitleBg.png" class="areaTitleBg"/><span class="titsp">了解大唐</span></div>
             <div class="knowUsMain">
-                <div class="knowUsOne" @click="open('pingtai')">
+                <div class="knowUsOne" v-for="(item,index) in PlatFormInfoList" v-if="PlatFormInfoList.length<4" @click="open(item.clickUrl)">
+                    <img :src='item.iconUrl' class="knowUsImg"/>
+                    <p class="p1" v-html="item.name"></p>
+                    <p class="p2" v-html="item.infoDescription"></p>
+                </div>
+                <!-- <div class="knowUsOne" @click="open('pingtai')">
                     <img src="./img/knowUs1.png" class="knowUsImg"/>
                     <p class="p1">平台简介</p>
                     <p class="p2">私行服务平台</p>
@@ -175,7 +180,7 @@
                     <img src="./img/knowUs3.png" class="knowUsImg"/>
                     <p class="p1">安全保障</p>
                     <p class="p2">合规运作8年</p>
-                </div>
+                </div> -->
                 <div style="clear:both;"></div>
             </div>
         </div><!--knowUs-->
@@ -238,6 +243,7 @@ export default {
             length3:'',
             shareflag:'',
             showitem1:false,
+            PlatFormInfoList:[]
         }
     },
     methods:{
@@ -607,6 +613,29 @@ export default {
             }
         })
     },
+    getPlatFormInfoList:function(){//了解大唐
+        let that = this;
+        var param=Base64.encode('{"infoType":"1"}');
+        axios({
+            method:'get',
+            url:'/olmgweb/InfoApiController/getPlatFormInfoList',//平台资料管理
+            params:{
+                param:param,
+                osFlag:'3'
+            }
+        })
+        .then(function(res) {//成功之后
+            var data=Base64.decode(res.data);
+            data=jQuery.parseJSON(data);
+            console.log(data)
+            var retCode=data.retCode;
+            var retMsg=data.retMsg;
+            if(retCode == 0){
+                that.PlatFormInfoList=data.itemList;
+            }else{
+            }
+        })
+    },
      subtext:function(t){
             if(!t==false){
                 return t.substr(0,10)
@@ -616,14 +645,17 @@ export default {
 
         },
         open:function(name){
-             this.$router.push({
-                path:'/'+name,
-                name:name,
-                query:{
-                    Name: encodeURIComponent(this.centerName)
-                    //comefrom:this.param.comefrom,//是否糖罐进入
-                }
-            })
+            if(!name == false){
+                window.location.href=name
+            }
+            //  this.$router.push({
+            //     path:'/'+name,
+            //     name:name,
+            //     query:{
+            //         Name: encodeURIComponent(this.centerName)
+            //         //comefrom:this.param.comefrom,//是否糖罐进入
+            //     }
+            // })
         },
         closeCoverMa:function(){
             this.cover_maIf=false;//隐藏放大的二维码；
@@ -883,6 +915,7 @@ export default {
         this.getuserName();
         this.getBanner();
         this.getActive()//获取活动列表；
+        this.getPlatFormInfoList()//了解大唐
     }
 }
 </script>

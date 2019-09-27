@@ -155,7 +155,12 @@
         <div class="knowUs pl26 pr26">
             <div class="areaTitle"><img src="./img/areaTitleBg.png" class="areaTitleBg"/><span class="titsp">了解大唐</span></div>
             <div class="knowUsMain">
-                <div class="knowUsOne" @click="open('pingtai')">
+                <div class="knowUsOne" v-for="(item,index) in PlatFormInfoList" v-if="PlatFormInfoList.length<4" @click="open(item.clickUrl)">
+                    <img :src='item.iconUrl' class="knowUsImg"/>
+                    <p class="p1" v-html="item.name"></p>
+                    <p class="p2" v-html="item.infoDescription"></p>
+                </div>
+                <!-- <div class="knowUsOne" @click="open('pingtai')">
                     <img src="./img/knowUs1.png" class="knowUsImg"/>
                     <p class="p1">平台简介</p>
                     <p class="p2">私行服务平台</p>
@@ -169,7 +174,7 @@
                     <img src="./img/knowUs3.png" class="knowUsImg"/>
                     <p class="p1">安全保障</p>
                     <p class="p2">合规运作8年</p>
-                </div>
+                </div> -->
                 <div style="clear:both;"></div>
             </div>
         </div><!--knowUs-->
@@ -227,6 +232,7 @@ export default {
             centerList:'',
             shareflag:'',
             showitem1:false,
+            PlatFormInfoList:[],
             centerListZ1:[{'centerName':'直属体验中心','groupId':'175390b5ebe94ba899451f4b12041b29'},{'centerName':'杭州一部体验中心','groupId':'5533b21cc352414fbec7d012f74f243a'},{'centerName':'杭州二部体验中心','groupId':'20f6e8a1d2d6444fb3a2c9079f16b3bc'}],
             centerListZ2:[{'centerName':'湖州一部体验中心','groupId':'20c5823bcbc641b089d7ff8ff60667dc'}],
             centerListZ3:[{'centerName':'宁波市区体验中心','groupId':'d10a21a0cd80457aa07f424fe0ac1b00'},{'centerName':'余姚体验中心','groupId':'0bcb5dc352cd4401b892f0a7c540a198'}],
@@ -281,6 +287,10 @@ export default {
 
         },
         open:function(name){
+            if(!name == false){
+                window.location.href=name
+            }
+            /*
              this.$router.push({
                 path:'/'+name,
                 name:name,
@@ -288,7 +298,7 @@ export default {
                     Name: encodeURIComponent(this.areaName)
                     //comefrom:this.param.comefrom,//是否糖罐进入
                 }
-            })
+            })*/
         },
         closeCoverMa:function(){
             this.cover_maIf=false;//隐藏放大的二维码；
@@ -564,6 +574,29 @@ export default {
                 }
             })
         },
+        getPlatFormInfoList:function(){//了解大唐
+            let that = this;
+            var param=Base64.encode('{"infoType":"1"}');
+            axios({
+                method:'get',
+                url:'/olmgweb/InfoApiController/getPlatFormInfoList',//平台资料管理
+                params:{
+                    param:param,
+                    osFlag:'3'
+                }
+            })
+            .then(function(res) {//成功之后
+                var data=Base64.decode(res.data);
+                data=jQuery.parseJSON(data);
+                console.log(data)
+                var retCode=data.retCode;
+                var retMsg=data.retMsg;
+                if(retCode == 0){
+                    that.PlatFormInfoList=data.itemList;
+                }else{
+                }
+            })
+        },
         jumpExp:function(id){
             console.log(id);
             this.$router.push({
@@ -726,6 +759,7 @@ export default {
         this.getAreaInfo();
         this.getuserName();
         this.getActive()//获取活动列表；
+        this.getPlatFormInfoList()//了解大唐
     }
 }
 </script>
